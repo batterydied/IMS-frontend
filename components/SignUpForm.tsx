@@ -8,7 +8,6 @@ export default function SignUpForm(){
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [isPasswordHidden, setIsPasswordHidden] = useState(true)
-    const [message, setMessage] = useState("");
     const [errorMsg, setErrorMsg] = useState<string | null>(null)
     
     const handleShowPassword = useCallback((e: React.MouseEvent) => {
