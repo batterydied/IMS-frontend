@@ -7,9 +7,10 @@ export default function LoginForm() {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
 
-  const handleLogin = async () => {
+const handleSignIn = async (e:React.FormEvent) => {
+    e.preventDefault()
     try {
-      const res = await fetch("http://localhost:5000/login", {
+      const res = await fetch("http://localhost:5000/signin", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -20,7 +21,8 @@ export default function LoginForm() {
       const data = await res.json();
 
       if (res.ok) {
-        setMessage(`Logged in as ${data.email}`);
+        console.log(data)
+        setMessage(`Logged in as ${data.user}`);
         // Optionally store token: localStorage.setItem("token", data.access_token);
       } else {
         setMessage(data.error || "Login failed");
@@ -47,7 +49,7 @@ export default function LoginForm() {
       />
       <button
         className="bg-accent p-2 rounded-md hover:bg-accent/80 active:bg-accent/70 text-secondary"
-        onClick={handleLogin}
+        onClick={handleSignIn}
       >
         Login
       </button>
