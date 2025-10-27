@@ -14,8 +14,8 @@ export default function SignUpPage(){
                     <Image src="/nature.png" alt="app icon" height={50} width={50} className="object-cover w-full h-full"></Image>
                 </div>
                 <strong className="text-2xl">Create Account</strong>
-                <p className="text-muted">{"Already have an account? "}
-                    <Link className="text-content hover:cursor-pointer" href="/auth/signin">Sign in</Link>
+                <p className="text-content">{"Already have an account? "}
+                    <Link className="text-accent hover:cursor-pointer" href="/auth/signin">Sign in</Link>
                 </p>
                 <SignUpForm />
             </div>
