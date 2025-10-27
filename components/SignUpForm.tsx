@@ -23,13 +23,17 @@ export default function SignUpForm(){
   const handleSignUp = async (e:React.FormEvent) => {
     e.preventDefault()
     try {
+        console.log("test")
+
       const res = await fetch("http://localhost:5000/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, password }),
+        credentials: "include", // <--- this is key!
       });
+      console.log("test")
 
       const data = await res.json();
 
