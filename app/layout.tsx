@@ -1,6 +1,7 @@
-import type { Metadata } from "next";
-import { Montserrat } from "next/font/google";
-import "./globals.css";
+import type { Metadata } from "next"
+import { Montserrat } from "next/font/google"
+import "./globals.css"
+import { SupabaseProvider } from "@/contexts/SupabaseProvider";
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
@@ -21,8 +22,10 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={`${montserrat.variable} antialiased`}
-      >
-        {children}
+      > 
+        <SupabaseProvider>
+          {children}
+        </SupabaseProvider>
       </body>
     </html>
   );

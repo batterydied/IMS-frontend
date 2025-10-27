@@ -1,6 +1,8 @@
-import LoginForm from "@/components/LoginForm";
-import Image from "next/image";
-export default function loginPage(){
+import SignInForm from "@/components/SignInForm"
+import Image from "next/image"
+import Link from "next/link"
+
+export default function SignInPage(){
     return (
         <div className="page bg-nature">
             <div
@@ -10,8 +12,10 @@ export default function loginPage(){
                     <Image src="/nature.png" alt="app icon" height={50} width={50} className="object-cover w-full h-full"></Image>
                 </div>
                 <strong className="text-2xl">Welcome Back</strong>
-                <p className="text-muted">{"Don't have an account yet?"} <span className="text-content hover:cursor-pointer">Sign up</span></p>
-                <LoginForm />
+                <p className="text-muted">{"Don't have an account yet? "}
+                    <Link className="text-content hover:cursor-pointer" href="/auth/signup">Sign up</Link>
+                </p>
+                <SignInForm />
             </div>
         </div>
     )
