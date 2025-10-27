@@ -1,5 +1,5 @@
 import { LogOutSVG, UploadSVG } from "./SVG"
-import { memo, useRef } from "react"
+import { memo } from "react"
 
 interface NavbarProps {
     handleUpload: () => void

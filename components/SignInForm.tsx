@@ -5,7 +5,7 @@ import { ViewOffSVG, ViewSVG } from "@/components/SVG"
 import { useRouter } from "next/navigation"
 import { useSupabase } from "@/contexts/SupabaseProvider"
 
-export default function LoginForm(){
+export default function SignInForm(){
     const router = useRouter()
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
