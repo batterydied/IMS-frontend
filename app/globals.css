@@ -2,11 +2,11 @@
 @plugin "daisyui";
 
 :root {
-  --primary: #302E38;   
-  --secondary: #4A4854; 
-  --accent: #A3B8B2;  
-  --muted: #b0b0b0;
-  --content: #D9E1DF;
+  --primary: #3F3F37;   
+  --secondary: #D6D6B1; 
+  --accent: #DE541E;  
+  --muted: #494331;
+  --content: #878472;
 }
 
 @theme inline {
@@ -54,3 +54,18 @@ body {
   box-shadow: none !important;
   border-color: inherit !important;
 }
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  border: 1px solid transparent;
+  -webkit-text-fill-color: #F1F1F1;
+  -webkit-box-shadow: 0 0 0px 1000px transparent inset;
+  transition: background-color 5000s ease-in-out 0s;
+};
