@@ -60,8 +60,8 @@ export default function LoginForm(){
                     setEmail(e.currentTarget.value)
                 }}/>
                 <div>
-                    <label className="input w-full">
-                        <input name="password" placeholder="Password" className="input-no-focus" value={password} type={isPasswordHidden ? "password" : "text"} onChange={(e)=>{
+                    <label className="input input-no-focus w-full">
+                        <input name="password" placeholder="Password" value={password} type={isPasswordHidden ? "password" : "text"} onChange={(e)=>{
                             setPassword(e.currentTarget.value)
                         }}/>
                         {isPasswordHidden ? <ViewOffSVG className="hover:cursor-pointer" onClick={handleShowPassword}/> : <ViewSVG className="hover:cursor-pointer" onClick={handleHidePassword}/>}
@@ -75,7 +75,7 @@ export default function LoginForm(){
                 or
                 <div className='w-[47%] h-0.5 bg-muted'/>
             </div>
-            <button onClick={handleGoogleSignIn} className="bg-content p-2 rounded-md hover:bg-content/80 active:bg-content/70 text-secondary flex justify-center">
+            <button onClick={handleGoogleSignIn} className="hover:cursor-pointer text-content p-2 rounded-md hover:text-secondary flex justify-center">
                 <div className="flex flex-row space-x-3">
                     <Image src="/google.svg" alt="Google Icon" width={20} height={20}/>
                     <div>Continue with Google</div>

@@ -26,7 +26,7 @@ export default function App() {
   )
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-primary">
+    <div className="flex flex-col items-center justify-center h-screen bg-primary glass">
       <Navbar handleLogOut={handleLogOut} handleUpload={()=>{}}/>
       <div className="grid grid-cols-[35%_1fr] gap-2 p-6 h-full w-full">
         <div className="bg-secondary p-2">

@@ -12,8 +12,8 @@ export default function SignInPage(){
                     <Image src="/nature.png" alt="app icon" height={50} width={50} className="object-cover w-full h-full"></Image>
                 </div>
                 <strong className="text-2xl">Welcome Back</strong>
-                <p className="text-muted">{"Don't have an account yet? "}
-                    <Link className="text-content hover:cursor-pointer" href="/auth/signup">Sign up</Link>
+                <p className="text-content">{"Don't have an account yet? "}
+                    <Link className="text-accent hover:cursor-pointer" href="/auth/signup">Sign up</Link>
                 </p>
                 <SignInForm />
             </div>

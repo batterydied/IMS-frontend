@@ -49,8 +49,8 @@ export default function SignUpForm(){
                 setEmail(e.currentTarget.value)
             }}/>
             <div>
-                <label className="input w-full">
-                    <input name="password" placeholder="Password" className="input-no-focus" value={password} type={isPasswordHidden ? "password" : "text"} onChange={(e)=>{
+                <label className="input input-no-focus w-full">
+                    <input name="password" placeholder="Password" value={password} type={isPasswordHidden ? "password" : "text"} onChange={(e)=>{
                         setPassword(e.currentTarget.value)
                     }}/>
                     {isPasswordHidden ? <ViewOffSVG className="hover:cursor-pointer" onClick={handleShowPassword}/> : <ViewSVG className="hover:cursor-pointer" onClick={handleHidePassword}/>}
