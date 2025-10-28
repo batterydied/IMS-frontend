@@ -2,11 +2,11 @@
 @plugin "daisyui";
 
 :root {
-  --primary: #3F3F37;   
-  --secondary: #D6D6B1; 
-  --accent: #DE541E;  
-  --muted: #494331;
-  --content: #878472;
+  --primary: #37353E;   
+  --secondary: #44444E; 
+  --accent: #EB3678;
+  --muted: #715A5A;
+  --content: #D3DAD9;
 }
 
 @theme inline {
