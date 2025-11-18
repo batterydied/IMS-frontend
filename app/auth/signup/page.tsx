@@ -3,8 +3,7 @@ import SignUpForm from "@/components/SignUpForm"
 import { useSupabase } from "@/contexts/SupabaseProvider"
 import Image from "next/image"
 import Link from "next/link"
-import { useRouter } from "next/router"
-
+import { useRouter } from "next/navigation"
 
 export default function SignUpPage(){
     const {user, isLoading} = useSupabase()
@@ -16,6 +15,7 @@ export default function SignUpPage(){
         router.replace('/')
         return null
     }
+
     return (
         <div className="page bg-nature">
             <div
