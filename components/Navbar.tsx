@@ -1,5 +1,5 @@
 import { LogOutSVG, UploadSVG } from "./SVG"
-import { memo, useRef } from "react"
+import { memo } from "react"
 
 interface NavbarProps {
     handleUpload: () => void
@@ -9,12 +9,12 @@ interface NavbarProps {
 const Navbar = ({handleUpload, handleLogOut}: NavbarProps) => {
     return <div className="navbar justify-between bg-primary shadow-sm space-x-2 px-6">
         
-        <button onClick={handleUpload} className="rounded-md btn bg-accent border-transparent hover:bg-accent/80 group text-secondary hover:text-white">
+        <button onClick={handleUpload} className="rounded-md btn bg-accent/80 border-transparent hover:bg-accent group text-content">
             <UploadSVG />
             Upload Invoice
         </button>
-        <button onClick={handleLogOut} className="rounded-md btn btn-square border-transparent bg-primary hover:bg-secondary group">
-            <LogOutSVG className="text-secondary group-hover:text-red-500"/>
+        <button onClick={handleLogOut} className="rounded-md btn btn-square border-transparent bg-primary/80 hover:bg-secondary group">
+            <LogOutSVG className="text-content group-hover:text-red-500"/>
         </button>
     </div>
 }

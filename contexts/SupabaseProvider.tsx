@@ -24,7 +24,7 @@ export function SupabaseProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const getUser = async () => {
-      const { data } = await supabase.auth.getUser()
+    const { data } = await supabase.auth.getUser()
       setUser(data.user ?? null)
       setIsLoading(false)
     }

@@ -59,11 +59,11 @@ export default function SignUpForm(){
                     <input name="password" placeholder="Password" value={password} type={isPasswordHidden ? "password" : "text"} onChange={(e)=>{
                         setPassword(e.currentTarget.value)
                     }}/>
-                    {isPasswordHidden ? <ViewOffSVG className="hover:cursor-pointer" onClick={handleShowPassword}/> : <ViewSVG className="text-secondary hover:cursor-pointer" onClick={handleHidePassword}/>}
+                    {isPasswordHidden ? <ViewOffSVG className="text-muted hover:cursor-pointer" onClick={handleShowPassword}/> : <ViewSVG className="text-content hover:cursor-pointer" onClick={handleHidePassword}/>}
                 </label>
                 {errorMsg && <text className="text-sm text-red-400">{errorMsg}</text>}
             </div>
-            <button className="bg-accent p-2 rounded-md hover:bg-accent/80 active:bg-accent/70 text-secondary">Sign up</button>
+            <button className="bg-accent p-2 rounded-md hover:bg-accent/80 active:bg-accent/70 text-content">Sign up</button>
         </form>
     )
 }
