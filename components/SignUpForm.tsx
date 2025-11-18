@@ -1,10 +1,12 @@
 "use client"
+import { useSupabase } from "@/contexts/SupabaseProvider"
 import { useRouter } from "next/navigation"
 import { useCallback, useState } from "react"
 import { ViewOffSVG, ViewSVG } from "./SVG"
 
 export default function SignUpForm(){
     const router = useRouter()
+    const {supabase} = useSupabase()
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [isPasswordHidden, setIsPasswordHidden] = useState(true)
@@ -20,34 +22,26 @@ export default function SignUpForm(){
         setIsPasswordHidden(true)
     }, [])
     
-  const handleSignUp = async (e:React.FormEvent) => {
-    e.preventDefault()
-    try {
-        console.log("test")
+    const handleSignUp = async (e: React.FormEvent) => {
+        e.preventDefault()
+        const { data, error } = await supabase.auth.signUp({
+            email,
+            password,
+        });
+        if(error){
+            setErrorMsg(error.message);
+            return
+        }
 
-      const res = await fetch("http://localhost:5000/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-        credentials: "include", // <--- this is key!
-      });
-      console.log("test")
-
-      const data = await res.json();
-
-      if (res.ok) {
-        console.log(data)
-        setErrorMsg(data.message);
-        // Optionally store token: localStorage.setItem("token", data.access_token);
-      } else {
-        setErrorMsg(data.error || "Login failed");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+        if(data.user?.identities?.length === 0){
+            setErrorMsg("Email already registered. Try signing in instead.")
+            return
+        }else if(!data.session){
+            setErrorMsg("Check your inbox to verify your email address before logging in.")
+        }else{
+            router.replace("/auth/signin")
+        }
+    }   
 
     return (
         <form onSubmit={handleSignUp} className="flex flex-col w-[80%] space-y-4 p-2">

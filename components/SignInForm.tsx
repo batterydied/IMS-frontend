@@ -1,7 +1,8 @@
 "use client"
-import { useRouter } from "next/navigation"
+import Image from "next/image"
 import { useCallback, useState } from "react"
 import { ViewOffSVG, ViewSVG } from "@/components/SVG"
+import { useRouter } from "next/navigation"
 import { useSupabase } from "@/contexts/SupabaseProvider"
 
 export default function SignInForm(){
@@ -10,42 +11,45 @@ export default function SignInForm(){
     const [password, setPassword] = useState("")
     const [isPasswordHidden, setIsPasswordHidden] = useState(true)
     const [errorMsg, setErrorMsg] = useState<string | null>(null)
-
-
+    const {supabase} = useSupabase()
 
     const handleShowPassword = useCallback((e: React.MouseEvent) => {
         e.preventDefault()
         setIsPasswordHidden(false)
     }, [])
-    
+
     const handleHidePassword = useCallback((e: React.MouseEvent) => {
         e.preventDefault()
         setIsPasswordHidden(true)
     }, [])
-    
-    const handleSignIn = async (e:React.FormEvent) => {
+
+    const handleSignIn = async (e: React.FormEvent) => {
         e.preventDefault()
-        try {
-        const res = await fetch("http://localhost:5000/signin", {
-            method: "POST",
-            headers: {
-            "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ email, password }),
-            credentials: "include", // <--- this is key!
+        if(email && password){
+            const { error } = await supabase.auth.signInWithPassword({
+                email,
+                password,
+            })
+            if(error){
+                setErrorMsg(error.message)
+            }else{
+                setErrorMsg(null)
+                router.replace("/")
+            }
+        }else{
+            alert("Please enter your email and password")
+        }
+    }
+
+    const handleGoogleSignIn = async () => {
+        const { error } = await supabase.auth.signInWithOAuth({
+            provider: "google",
         });
 
-        const data = await res.json();
-
-        if (res.ok) {
-            console.log(data)
-            setMessage(`Logged in as ${data.user}`);
-            // Optionally store token: localStorage.setItem("token", data.access_token);
+        if (error) {
+            console.error("Google sign-in error:", error.message);
         } else {
-            setMessage(data.error || "Login failed");
-        }
-        } catch (error) {
-        setMessage("Error connecting to backend");
+            console.log("Redirecting to Google…");
         }
     };
 
