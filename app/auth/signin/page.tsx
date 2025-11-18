@@ -1,8 +1,21 @@
+"use client"
 import SignInForm from "@/components/SignInForm"
+import { useSupabase } from "@/contexts/SupabaseProvider"
 import Image from "next/image"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 
 export default function SignInPage(){
+    const {user, isLoading} = useSupabase()
+    
+    const router = useRouter()
+    if(isLoading) return null
+
+    if(!isLoading && user){
+        router.replace('/')
+        return null
+    }
+
     return (
         <div className="page bg-nature">
             <div

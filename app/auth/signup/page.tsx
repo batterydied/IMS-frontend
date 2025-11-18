@@ -1,10 +1,21 @@
+"use client"
 import SignUpForm from "@/components/SignUpForm"
+import { useSupabase } from "@/contexts/SupabaseProvider"
 import Image from "next/image"
 import Link from "next/link"
+import { useRouter } from "next/router"
 
 
 export default function SignUpPage(){
+    const {user, isLoading} = useSupabase()
 
+    const router = useRouter()
+    if(isLoading) return null
+
+    if(!isLoading && user){
+        router.replace('/')
+        return null
+    }
     return (
         <div className="page bg-nature">
             <div
