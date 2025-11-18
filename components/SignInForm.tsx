@@ -64,18 +64,18 @@ export default function SignInForm(){
                         <input name="password" placeholder="Password" value={password} type={isPasswordHidden ? "password" : "text"} onChange={(e)=>{
                             setPassword(e.currentTarget.value)
                         }}/>
-                        {isPasswordHidden ? <ViewOffSVG className="hover:cursor-pointer" onClick={handleShowPassword}/> : <ViewSVG className="hover:cursor-pointer" onClick={handleHidePassword}/>}
+                        {isPasswordHidden ? <ViewOffSVG className="hover:cursor-pointer text-muted" onClick={handleShowPassword}/> : <ViewSVG className="hover:cursor-pointer" onClick={handleHidePassword}/>}
                     </label>
                     {errorMsg && <text className="text-sm text-red-400">{errorMsg}</text>}
                 </div>
-                <button type="submit" className="bg-accent p-2 rounded-md hover:bg-accent/80 active:bg-accent/70 text-secondary w-full">Login</button>
+                <button type="submit" className="bg-accent p-2 rounded-md hover:bg-accent/80 active:bg-accent/70 text-content w-full">Sign in</button>
             </form>
             <div className='flex flex-row items-center justify-between'>
                 <div className='w-[47%] h-0.5 bg-muted'/>
                 or
                 <div className='w-[47%] h-0.5 bg-muted'/>
             </div>
-            <button onClick={handleGoogleSignIn} className="hover:cursor-pointer text-content p-2 rounded-md hover:text-secondary flex justify-center">
+            <button onClick={handleGoogleSignIn} className="hover:cursor-pointer text-content p-2 rounded-md hover:text-accent flex justify-center">
                 <div className="flex flex-row space-x-3">
                     <Image src="/google.svg" alt="Google Icon" width={20} height={20}/>
                     <div>Continue with Google</div>

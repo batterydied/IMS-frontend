@@ -40,12 +40,12 @@ export default function App() {
   )
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-primary glass">
+    <div className="flex flex-col items-center justify-center h-screen bg-primary">
       <Navbar handleLogOut={handleLogOut} handleUpload={handleUpload}/>
       <input ref={inputRef} className="hidden" type="file" onChange={handleFileChange}/>
-      <div className="grid grid-cols-[35%_1fr] gap-2 p-6 h-full w-full">
+      <div className="grid grid-cols-[25%_1fr] gap-2 p-6 h-full w-full">
         <div className="bg-secondary p-2">
-          <text className="text-primary">Welcome! Glad to see you.</text>
+          <text className="text-content">Welcome! Glad to see you.</text>
         </div>
         <div className="bg-secondary p-2">
 
