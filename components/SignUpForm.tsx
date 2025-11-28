@@ -45,11 +45,11 @@ export default function SignUpForm(){
 
     return (
         <form onSubmit={handleSignUp} className="flex flex-col w-[80%] space-y-4 p-2">
-            <input name="email" placeholder="Email" className="input input-no-focus w-full" value={email} onChange={(e)=>{
+            <input name="email" placeholder="Email" className="input input-no-focus w-full border-0 bg-gray-800" value={email} onChange={(e)=>{
                 setEmail(e.currentTarget.value)
             }}/>
             <div>
-                <label className="input input-no-focus w-full">
+                <label className="input w-full rounded-sm input-no-focus border-0 bg-gray-800">
                     <input name="password" placeholder="Password" value={password} type={isPasswordHidden ? "password" : "text"} onChange={(e)=>{
                         setPassword(e.currentTarget.value)
                     }}/>
