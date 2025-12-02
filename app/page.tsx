@@ -2,14 +2,30 @@
 import { useSupabase } from "@/contexts/SupabaseProvider"
 import { useRouter } from "next/navigation"
 import { useCallback, useEffect, useRef, useState } from "react"
-import Navbar from "@/components/Navbar"
-import { MenuSVG } from "@/components/SVG"
+import { Sidebar } from "@/components/Sidebar"
+import Dashboard from "@/components/Dashboard"
+import { SearchView } from "@/components/SearchView"
+import { ExtractView } from "@/components/ExtractView"
+
+export type ViewMode = "dashboard" | "search" | "extract";
+
+const VIEWS = {
+  dashboard: <Dashboard />,
+  search: <SearchView />,
+  extract: <ExtractView />,
+} as const;
 
 export default function App() {
   const router = useRouter()
   const { user, supabase, isLoading } = useSupabase()
   const [isCollapsed, setIsCollapsed] = useState(true)
+  const [query, setQuery] = useState("")
+  const [viewMode, setViewMode] = useState<ViewMode>("dashboard");
   const inputRef = useRef<HTMLInputElement>(null)
+
+  const handleSelectView = (view: ViewMode) => {
+    setViewMode(view)
+  }
 
   const handleLogOut = useCallback(async () => {
     await supabase.auth.signOut()
@@ -33,6 +49,18 @@ export default function App() {
     setIsCollapsed(prev => !prev)
   }, [])
 
+  const handleSetQuery = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(e.target.value)
+  }, [])
+
+  const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      if(query != ""){
+        setViewMode("search")
+      }
+    }
+  }, [query])
+
   useEffect(() => {
     if (!isLoading && !user) {
       router.replace("/auth/signin")
@@ -47,40 +75,9 @@ export default function App() {
 
   return (
     <div className="flex flex-row h-screen bg-primary">
-      <div className="w-[50px] h-full bg-content flex justify-center p-2 border-r border-muted items-start">
-        <div onClick={handleToggleCollapsed} className="hover:cursor-pointer hover:bg-secondary text-content2 p-1 rounded-sm h-auto">
-            <MenuSVG/>
-        </div>
-      </div>
-      <div
-        className={`${
-          isCollapsed ? "w-0 !p-0" : "w-[250px]"
-        } transition-all duration-300 bg-content p-2 overflow-hidden h-full`}
-      >
-        <div
-          className={`w-full transition-opacity duration-300 flex flex-col h-full space-y-2 ${
-            isCollapsed ? "opacity-0" : "opacity-100"
-          }`}
-        >
-          <input
-            type="text"
-            placeholder="Search..."
-            className="input w-full focus:outline-none border-0 bg-primary text-content2"
-          />
-          <div className="text-content2 p-1 min-w-[200px]">
-            Dashboard
-          </div>
-            <div className="text-content2 p-1 min-w-[200px]">
-            Calendar
-          </div>
-            <div className="text-content2 p-1 min-w-[200px]">
-            Invoice Extractor
-          </div>
-        </div>
-      </div>
-
+      <Sidebar handleToggle={handleToggleCollapsed} isCollapsed={isCollapsed} handleSetQuery={handleSetQuery} query={query} handleKeyDown={handleKeyDown} handleSelectView={handleSelectView}/>
       <div className="bg-primary flex-1 p-2">
-        <text>hi</text>
+        {VIEWS[viewMode]}
       </div>
     </div>
   )

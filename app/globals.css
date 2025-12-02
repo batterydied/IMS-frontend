@@ -22,7 +22,7 @@
 
 body {
   background: var(--primary);
-  color: var(--content);
+  color: var(--content2);
   font-family: var(--font-montserrat), sans-serif;
   width: 100vw;
   height: 100vh;
