@@ -21,29 +21,15 @@ export default function App() {
   const [isCollapsed, setIsCollapsed] = useState(true)
   const [query, setQuery] = useState("")
   const [viewMode, setViewMode] = useState<ViewMode>("dashboard");
-  const inputRef = useRef<HTMLInputElement>(null)
 
   const handleSelectView = (view: ViewMode) => {
     setViewMode(view)
   }
 
-  const handleLogOut = useCallback(async () => {
+  const handleSignOut = useCallback(async () => {
     await supabase.auth.signOut()
     router.replace("/auth/signin")
   }, [router, supabase.auth])
-
-  const handleUpload = useCallback(()=>{
-    if(inputRef.current){
-      inputRef.current.click()
-    }
-  }, [])
-
-  const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if(file){
-      console.log("Uploaded file:", file)
-    }
-  }, [])
 
   const handleToggleCollapsed = useCallback(() => {
     setIsCollapsed(prev => !prev)
@@ -75,7 +61,7 @@ export default function App() {
 
   return (
     <div className="flex flex-row h-screen bg-primary">
-      <Sidebar handleToggle={handleToggleCollapsed} isCollapsed={isCollapsed} handleSetQuery={handleSetQuery} query={query} handleKeyDown={handleKeyDown} handleSelectView={handleSelectView}/>
+      <Sidebar handleSignOut={handleSignOut} handleToggle={handleToggleCollapsed} isCollapsed={isCollapsed} handleSetQuery={handleSetQuery} query={query} handleKeyDown={handleKeyDown} handleSelectView={handleSelectView}/>
       <div className="bg-primary flex-1 p-2">
         {VIEWS[viewMode]}
       </div>

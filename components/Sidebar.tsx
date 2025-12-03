@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { MenuSVG } from "./SVG"
+import { LogOutSVG, MenuSVG } from "./SVG"
 import { ViewMode }from "@/app/page";
 
 interface Sidebar {
@@ -9,9 +9,10 @@ interface Sidebar {
     handleSetQuery: (e: React.ChangeEvent<HTMLInputElement>) => void;
     handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
     handleSelectView: (view: ViewMode) => void;
+    handleSignOut: () => void;
 }
 
-export const Sidebar = memo(function Sidebar({handleToggle, isCollapsed, query, handleSetQuery, handleKeyDown, handleSelectView} : Sidebar){
+export const Sidebar = memo(function Sidebar({handleSignOut, handleToggle, isCollapsed, query, handleSetQuery, handleKeyDown, handleSelectView} : Sidebar){
     return (
         <>
         <div className="w-[50px] h-full bg-content flex justify-center p-2 border-r border-muted items-start">
@@ -42,6 +43,11 @@ export const Sidebar = memo(function Sidebar({handleToggle, isCollapsed, query, 
                 </div>
                 <div className="text-content2 p-1 min-w-[200px] hover:cursor-pointer" onClick={() => handleSelectView("extract")}>
                     Extract Invoices
+                </div>
+                <div className="p-4 flex-1 flex items-end w-full justify-end">
+                    <button className="btn bg-red-600 rounded-md border-0" onClick={handleSignOut}>Sign Out
+                        <LogOutSVG/>
+                    </button>
                 </div>
             </div>
         </div>

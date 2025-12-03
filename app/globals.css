@@ -75,5 +75,11 @@ select:-webkit-autofill:focus {
 input:focus {
   outline: none !important;
   box-shadow: none !important;
-  border-color: transparent !important; /* optional */
 }
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.4) brightness(0.8);
+  opacity: 1;
+  cursor: pointer;
+}
+
