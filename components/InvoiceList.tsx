@@ -91,12 +91,12 @@ export default function InvoiceList() {
   };
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex gap-4">
+    <div className="flex flex-col gap-6 w-full h-full overflow-scroll">
+      <div className="flex gap-4 ">
         <input
           type="text"
           placeholder="Search invoices..."
-          className="flex-1 p-2 border border-gray-300 rounded text-black"
+          className="flex-1 p-2 bg-secondary border border-border rounded text-content2"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
@@ -104,10 +104,10 @@ export default function InvoiceList() {
         <button
           onClick={handleExport}
           disabled={selectedIds.length === 0}
-          className={`px-4 py-2 rounded font-bold text-white transition
+          className={`px-4 py-2 rounded font-bold text-content transition
             ${selectedIds.length > 0 
-              ? "bg-green-600 hover:bg-green-700" 
-              : "bg-gray-600 cursor-not-allowed opacity-50"
+              ? "btn border-accent bg-accent hover:bg-accent/90 hover:border-accent/90" 
+              : "!btn cursor-not-allowed"
             }`}
         >
           Export CSV ({selectedIds.length})
@@ -129,7 +129,7 @@ export default function InvoiceList() {
             />
           ))
         ) : (
-          <p className="text-gray-500">No invoices found.</p>
+          <p className="text-content2">No invoices found.</p>
         )}
       </div>
     </div>

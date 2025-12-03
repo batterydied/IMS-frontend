@@ -11,14 +11,14 @@ export default function InvoiceItem({
   id, description, amount, date, isSelected, onToggle 
 }: InvoiceProps) {
   return (
-    <div className="border p-4 rounded flex items-center justify-between text-white">
+    <div className="border p-4 bg-secondary rounded flex items-center justify-between text-content2 border-border">
       
         <div className="mr-4">
             <input 
             type="checkbox" 
             checked={isSelected}
             onChange={() => onToggle(id)}
-            className="w-5 h-5 accent-blue-500 cursor-pointer"
+            className="w-5 h-5 accent-accent cursor-pointer"
             />
         </div>
 
@@ -30,7 +30,7 @@ export default function InvoiceItem({
             ${amount.toFixed(2)}
         </span>
 
-        <span className="text-white w-34 text-right whitespace-nowrap">
+        <span className="text-content2 w-34 text-right whitespace-nowrap">
             {date}
         </span>
       
