@@ -6,6 +6,7 @@
   --secondary: #F8F4EC; 
   --accent: #1A43BF;
   --muted: #A3AABE;
+  --border: #d3d3d3;
   --content: #D3DAD9;
   --content2: #222222;
 }
@@ -15,6 +16,7 @@
   --color-secondary: var(--secondary);
   --color-muted: var(--muted);
   --color-accent: var(--accent);
+  --color-border: var(--border);
   --color-content: var(--content);
   --color-content2: var(--content2);
   --font-montserrat: var(--font-montserrat);

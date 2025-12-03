@@ -13,11 +13,15 @@
     "@supabase/ssr": "github:supabase/ssr",
     "@supabase/supabase-js": "^2.76.1",
     "axios": "^1.13.2",
+    "colord": "^2.9.3",
+    "date-fns": "^4.1.0",
     "dotenv": "^17.2.3",
+    "lucide-react": "^0.555.0",
     "next": "15.5.4",
     "plotly.js": "^3.1.2",
     "react": "19.1.0",
     "react-dom": "19.1.0",
+    "react-loader-spinner": "^8.0.0",
     "react-plotly.js": "^2.6.0"
   },
   "devDependencies": {

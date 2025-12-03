@@ -1,12 +1,14 @@
-"use client"; // mark as client component
+"use client";
 
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import axios from "axios";
-
-// dynamically import Plot so it's only loaded on the client
+import CalendarWidget from '@/components/Calendar';
+import { AnyColor, Colord, colord } from "colord";
+// Dynamically import Plot
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 
+// --- Interfaces ---
 interface MonthlySale {
   month: string;
   revenue: number;
@@ -27,23 +29,51 @@ interface InvoiceData {
   unique_vendors: number;
   monthly_sales: MonthlySale[];
   top_vendors: Vendor[];
-  top_products_qty: Product[];  
-  product_sales: Product[];    
-  all_vendors: Vendor[];        
+  top_products_qty: Product[];
+  product_sales: Product[];
+  all_vendors: Vendor[];
 }
 
+export const generatePalette = (baseColor: AnyColor | Colord, steps = 5) => {
+  const palette = [];
+  for (let i = 0; i < steps; i++) {
+    const newColor = colord(baseColor).lighten(0.05 * i).toHex(); 
+    palette.push(newColor);
+  }
+  return palette;
+};
 
 export default function Dashboard() {
   const [data, setData] = useState<InvoiceData | null>(null);
+  
+  const [accentColor, setAccentColor] = useState("#008080"); 
+  const [borderColor, setBorderColor] = useState("#888888");
+  const [contentColor, setContentColor] = useState("#000000");
 
   useEffect(() => {
-    const fetchData = async () => {
-      const res = await axios.get<InvoiceData>("http://127.0.0.1:5000/api/invoices");
+    const style = getComputedStyle(document.documentElement);
+    
+    const rawAccent = style.getPropertyValue("--accent").trim();
+    if (rawAccent) setAccentColor(colord(rawAccent).toHex());
+    
+    const rawBorder = style.getPropertyValue("--border").trim();
+    if (rawBorder) setBorderColor(colord(rawBorder).toHex());
+    
+    const rawContent = style.getPropertyValue("--content2").trim();
+    if (rawContent) setContentColor(colord(rawContent).toHex());
 
-      setData(res.data);
+    const fetchData = async () => {
+      try {
+        const res = await axios.get<InvoiceData>("http://127.0.0.1:5000/api/invoices");
+        setData(res.data);
+      } catch (error) {
+        console.error("Error fetching dashboard data:", error);
+      }
     };
-    fetchData();
-    const interval = setInterval(fetchData, 60000);
+
+    fetchData(); 
+    const interval = setInterval(fetchData, 60000); 
+
     return () => clearInterval(interval);
   }, []);
 
@@ -59,213 +89,139 @@ export default function Dashboard() {
     unique_vendors,
     monthly_sales = [],
     top_vendors = [],
-    top_products_qty = [],
-    product_sales = [],
     all_vendors = [],
   } = data;
 
-  // Helper arrays
-  const months = monthly_sales.map((d: any) => d.month);
-  const monthRevenues = monthly_sales.map((d: any) => d.revenue ?? 0);
+  const months = monthly_sales.map((d) => d.month);
+  const monthRevenues = monthly_sales.map((d) => d.revenue ?? 0);
 
-  const vendorNames = top_vendors.map((d: any) => d.vendor_name);
-  const vendorRevenues = top_vendors.map((d: any) => d.revenue ?? 0);
+  const vendorNames = top_vendors.map((d) => d.vendor_name);
+  const vendorRevenues = top_vendors.map((d) => d.revenue ?? 0);
 
-  const productNames = top_products_qty.map((d: any) => d.description);
-  const productQty = top_products_qty.map((d: any) => d.quantity ?? 0);
+  const allVendorNames = all_vendors.map((d) => d.vendor_name);
+  const allVendorRevenue = all_vendors.map((d) => d.revenue ?? 0);
 
-  const allProductNames = product_sales.map((d: any) => d.description);
-  const allProductQty = product_sales.map((d: any) => d.quantity ?? 0);
+  const pieChartColors = generatePalette(accentColor, all_vendors.length || 1);
 
-  const allVendorNames = all_vendors.map((d: any) => d.vendor_name);
-  const allVendorRevenue = all_vendors.map((d: any) => d.revenue ?? 0);
+  const appointments = [
+    { date: "2025-12-05", title: "Vendor Meeting" },
+    { date: "2025-12-12", title: "Inventory Audit" },
+    { date: "2025-12-25", title: "Tax Deadline" },
+    { date: "2025-12-26", title: "Follow up" },
+  ];
 
   return (
-  <div className="flex flex-col w-[95%] justify-center mx-auto items-center ">
-  <h1 className="text-center text-3xl font-bold p-8">
-    Store Dashboard
-  </h1>
+        <div className="grid grid-cols-1 md:grid-cols-6 gap-6 p-6 w-full overflow-y-scroll h-full">
+          
+          {/* Cards */}
+          <div className="md:col-span-2 bg-secondary rounded-xl p-4 border border-border shadow-sm">
+            <h2 className="text-content2 font-bold">Total Revenue</h2>
+            <p className="text-4xl font-bold text-accent">
+              ${total_revenue.toLocaleString()}
+            </p>
+          </div>
+          <div className="md:col-span-2 bg-secondary rounded-xl p-4 border border-border shadow-sm">
+            <h2 className="text-content2 font-bold">Unique Vendors</h2>
+            <p className="text-4xl font-bold text-accent">
+              {unique_vendors}
+            </p>
+          </div>
+          <div className="md:col-span-2 bg-secondary rounded-xl p-4 border border-border shadow-sm">
+            <h2 className="text-content2 font-bold">Status</h2>
+            <p className="text-4xl font-bold text-accent">Active</p>
+          </div>
 
-  {/* KPI Cards */}
+          {/* Row 2: Monthly Sales (Big Chart) */}
+          <div className="col-span-4 bg-secondary rounded-xl p-4 border border-border shadow-sm">
+            <h2 className="mb-2 text-lg font-bold text-content2">Monthly Sales</h2>
+            <Plot
+              data={[{
+                x: months,
+                y: monthRevenues,
+                type: "lines+markers",
+                line: { width: 3, shape: "spline", color: accentColor },
+                marker: { color: accentColor },
+                hovertemplate: "<b>Month:</b> %{x}<br><b>Revenue:</b> $%{y:,.0f}<extra></extra>",
+              }]}
+              layout={{
+                paper_bgcolor: "rgba(0,0,0,0)",
+                plot_bgcolor: "rgba(0,0,0,0)",
+                font: { color: contentColor },
+                xaxis: { showgrid: false },
+                yaxis: { 
+                  showgrid: true, 
+                  gridcolor: borderColor, 
+                  zeroline: false, 
+                  tickfont: { color: borderColor } 
+                },
+                margin: { t: 20, b: 40, l: 60, r: 20 },
+                height: 350,
+                autosize: true
+              }}
+              config={{ displayModeBar: false, responsive: true }}
+              style={{ width: "100%", height: "100%" }}
+            />
+          </div>
 
-  <div className="grid grid-cols-2 w-full max-w-8xl mx-auto pb-8 gap-8">
-    <div  className=" p-4 rounded-lg text-center text-xl w-full">
+          {/* Row 2: Calendar */}
+          <div className="col-span-2 bg-secondary rounded-xl p-4 border border-border shadow-sm flex flex-col items-center">
+            {/* Passed appointments correctly */}
+            <CalendarWidget appointments={appointments} />
+          </div>
 
-      <h2>Total Revenue</h2>
-      <p className="text-4xl font-bold text-accent">
-        ${total_revenue.toLocaleString()}
-      </p>
-    </div>
-    <div  className=" p-4 rounded-lg text-center text-xl w-full">
-      <h2>Unique Vendors</h2>
-      <p className="text-4xl font-bold text-accent" >{unique_vendors}</p>
-    </div>
-  </div>
+          {/* Row 3: Top Vendors Bar Chart */}
+          <div className="col-span-3 bg-secondary rounded-xl p-4 border border-border shadow-sm">
+            <h2 className="mb-2 text-lg font-bold text-content2">Top Vendors</h2>
+            <Plot
+              data={[{
+                x: vendorRevenues,
+                y: vendorNames,
+                type: "bar",
+                orientation: "h",
+                marker: { color: accentColor },
+                hovertemplate: "<b>Vendor:</b> %{y}<br><b>Revenue:</b> $%{x:,.0f}<extra></extra>",
+              }]}
+              layout={{
+                paper_bgcolor: "rgba(0,0,0,0)",
+                plot_bgcolor: "rgba(0,0,0,0)",
+                font: { color: contentColor },
+                margin: { t: 20, b: 40, l: 120, r: 20 }, 
+                yaxis: { automargin: true },
+                height: 350,
+              }}
+              config={{ displayModeBar: false, responsive: true }}
+              style={{ width: "100%", height: "100%" }}
+            />
+          </div>
 
-  {/* Charts Grid */}
-    <div className="grid grid-cols-2 w-full max-w-8xl mx-auto gap-8">
-    {/* Monthly Sales Trend */}
-      <div  className=" p-4 rounded-lg text-center text-xl w-full">
+          {/* Row 3: All Vendors Pie Chart */}
+          <div className="col-span-3 min-h-100 bg-secondary rounded-xl p-4 border border-border shadow-sm">
+            <h2 className="mb-2 text-lg font-bold text-content2">Vendor Share</h2>
+            <Plot
+              data={[{
+                labels: allVendorNames,
+                values: allVendorRevenue,
+                type: "pie",
+                hole: 0.5,
+                marker: {
+                  colors: pieChartColors, 
+                },
+                hovertemplate: "<b>%{label}</b><br>Revenue: $%{value:,.0f}<br>Share: %{percent}<extra></extra>",
+              }]}
+              layout={{
+                paper_bgcolor: "rgba(0,0,0,0)",
+                plot_bgcolor: "rgba(0,0,0,0)",
+                font: { color: contentColor },
+                margin: { t: 20, b: 20, l: 20, r: 20 },
+                height: 350,
+                showlegend: true
+              }}
+              config={{ displayModeBar: false, responsive: true }}
+              style={{ width: "100%", height: "100%" }}
+            />
+          </div>
 
-      <h2>Monthly Sales</h2>
-
-      <Plot
-        data={[{
-          x: months,
-          y: monthRevenues,
-          type: "bar",
-          marker: { color: "teal" },
-          hovertemplate: "<b>Month:</b> %{x}<br><b>Revenue:</b> $%{y:,.0f}<extra></extra>",
-        }]}
-        layout={{
-          title: "Monthly Sales Trend",
-          // You may want to move these color configs to your CSS or keep them here if they are dynamic
-          paper_bgcolor: "rgba(0,0,0,0)", 
-          plot_bgcolor: "rgba(0,0,0,0)",
-          font: { color: "white" },
-          margin: { t: 50, b: 80, l: 60, r: 20 },
-          modebar: {
-            bgcolor: 'transparent', /* Removes the ugly background */
-            color: 'white',         /* Sets the default icon color */
-            activecolor: 'teal'     /* Sets the icon color when hovered/active */
-          }
-        }}
-        config={{ displayModeBar: true, displaylogo: false, showTips: false }}
-        style={{ width: "100%", height: "400px" }}
-      />
-    </div>
-
-    {/* Top Vendors */}
-    <div  className=" p-4 rounded-lg text-center text-xl w-full">
-      <h2>Top Vendors</h2>
-
-      <Plot
-        data={[{
-          x: vendorRevenues,
-          y: vendorNames,
-          type: "bar",
-          orientation: "h",
-          marker: { color: "cornflowerblue" },
-          hovertemplate: "<b>Vendor:</b> %{y}<br><b>Revenue:</b> $%{x:,.0f}<extra></extra>",
-        }]}
-        layout={{
-          title: "Top Vendors by Revenue",
-          paper_bgcolor: "rgba(0,0,0,0)", 
-          plot_bgcolor: "rgba(0,0,0,0)",
-          font: { color: "white" },
-          margin: { t: 50, b: 80, l: 150, r: 20 },
-          modebar: {
-            bgcolor: 'transparent', /* Removes the ugly background */
-            color: 'white',         /* Sets the default icon color */
-            activecolor: 'cornflowerblue'     /* Sets the icon color when hovered/active */
-          }
-        }}
-        config={{ displayModeBar: true, displaylogo: false, showTips: false }}
-        style={{ width: "100%", height: "400px" }}
-      />
-    </div>
-
-    {/* Top Products (Pie Chart) */}
-    <div  className=" p-4 rounded-lg text-center text-xl w-full">
-      <h2>Top Products (Pie)</h2>
-
-      <Plot
-        data={[{
-          labels: productNames,
-          values: productQty,
-          type: "pie",
-          hole: 0.6,
-          marker: {
-            colors: [
-              "#00CC96", "#AB63FA", "#FFA15A", "#19D3F3", "#FF6692",
-              "#B6E880", "#FF97FF", "#FECB52", "#636EFA", "#EF553B"
-            ]
-          },
-          hovertemplate: "<b>%{label}</b><br>Qty: %{value}<br>Share: %{percent}<extra></extra>",
-        }]}
-        layout={{
-          title: "Top Products by Quantity",
-          paper_bgcolor: "rgba(0,0,0,0)", 
-          plot_bgcolor: "rgba(0,0,0,0)",
-          font: { color: "white" },
-          margin: { t: 50, b: 80, l: 60, r: 20 },
-          modebar: {
-            bgcolor: 'transparent', /* Removes the ugly background */
-            color: 'white',         /* Sets the default icon color */
-            activecolor: '#00CC96'     /* Sets the icon color when hovered/active */
-          }
-        }}
-        config={{ displayModeBar: true, displaylogo: false, showTips: false }}
-        style={{ width: "100%", height: "400px" }}
-      />
-    </div>
-    
-    {/* All Vendors Overview (Pie) */}
-    <div  className=" p-4 rounded-lg text-center text-xl w-full">
-      <h2>Top Vendors (Pie) </h2>
-
-      <Plot
-        data={[{
-          labels: allVendorNames,
-          values: allVendorRevenue,
-          type: "pie",
-          hole: 0.4,
-          marker: {
-            colors: [
-              "#636EFA", "#EF553B", "#00CC96", "#AB63FA", "#FFA15A",
-              "#19D3F3", "#FF6692", "#B6E880", "#FF97FF", "#FECB52"
-            ]
-          },
-          hovertemplate: "<b>%{label}</b><br>Revenue: $%{value:,.0f}<br>Share: %{percent}<extra></extra>",
-        }]}
-        layout={{
-          title: "All Vendors Overview",
-          paper_bgcolor: "rgba(0,0,0,0)", 
-          plot_bgcolor: "rgba(0,0,0,0)",
-          font: { color: "white" },
-          margin: { t: 50, b: 80, l: 60, r: 20 },
-          modebar: {
-            bgcolor: 'transparent', /* Removes the ugly background */
-            color: 'white',         /* Sets the default icon color */
-            activecolor: '#636EFA'     /* Sets the icon color when hovered/active */
-          }
-        }}
-        config={{ displayModeBar: true, displaylogo: false, showTips: false }}
-        style={{ width: "100%", height: "400px" }}
-      />
-    </div>
-
-    {/* All Products by Quantity */}
-    <div  className=" p-4 rounded-lg text-center text-xl w-full">
-      <h2>Top Products</h2>
-
-      <Plot
-        data={[{
-          x: allProductQty,
-          y: allProductNames,
-          type: "bar",
-          orientation: "h",
-          marker: { color: "mediumpurple" },
-          hovertemplate: "<b>Product:</b> %{y}<br><b>Qty:</b> %{x}<extra></extra>",
-        }]}
-        layout={{
-          title: "All Products by Quantity",
-          paper_bgcolor: "rgba(0,0,0,0)", 
-          plot_bgcolor: "rgba(0,0,0,0)",
-          font: { color: "white" },
-          margin: { t: 50, b: 80, l: 150, r: 20 },
-          modebar: {
-            bgcolor: 'transparent', /* Removes the ugly background */
-            color: 'white',         /* Sets the default icon color */
-            activecolor: 'mediumpurple'     /* Sets the icon color when hovered/active */
-          }
-        }}
-        config={{ displayModeBar: true, displaylogo: false, showTips: false }}
-        style={{ width: "100%", height: "400px" }}
-      />
-    </div>
-
-  </div>
-</div>
- );
+        </div>
+      
+  );
 }
