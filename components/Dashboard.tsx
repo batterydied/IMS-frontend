@@ -6,34 +6,10 @@ import axios from "axios";
 import CalendarWidget from '@/components/Calendar'; // Adjust path
 import { AnyColor, Colord, colord } from "colord";
 import { TailSpin } from 'react-loader-spinner'
+import type { InvoiceData } from "@/types/dashboard";
 // Dynamically import Plot
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 
-// --- Interfaces ---
-interface MonthlySale {
-  month: string;
-  revenue: number;
-}
-
-interface Vendor {
-  vendor_name: string;
-  revenue: number;
-}
-
-interface Product {
-  description: string;
-  quantity: number;
-}
-
-interface InvoiceData {
-  total_revenue: number;
-  unique_vendors: number;
-  monthly_sales: MonthlySale[];
-  top_vendors: Vendor[];
-  top_products_qty: Product[];
-  product_sales: Product[];
-  all_vendors: Vendor[];
-}
 
 export const generatePalette = (baseColor: AnyColor | Colord, steps = 5) => {
   const palette = [];
@@ -95,8 +71,8 @@ export default function Dashboard() {
     monthly_sales = [],
     top_vendors = [],
     all_vendors = [],
+    all_appointments = [],
   } = data;
-
   const months = monthly_sales.map((d) => d.month);
   const monthRevenues = monthly_sales.map((d) => d.revenue ?? 0);
 
@@ -108,15 +84,12 @@ export default function Dashboard() {
 
   const pieChartColors = generatePalette(accentColor, all_vendors.length || 1);
 
-  const appointments = [
-    { date: "2025-12-05", title: "Vendor Meeting" },
-    { date: "2025-12-12", title: "Inventory Audit" },
-    { date: "2025-12-25", title: "Tax Deadline" },
-    { date: "2025-12-26", title: "Follow up" },
-  ];
-
+  const allAppointments = all_appointments.map((d) => ({
+    vendor_name: d.vendor_name, // Ensure this matches your API key (likely 'vendor_name')
+    invoice_date: d.invoice_date           // Ensure this matches your API key (likely 'date' or 'invoice_date')
+  }));
   return (
-    
+
       <div className="grid grid-cols-1 md:grid-cols-6 gap-6 w-full">
         
         {/* Cards */}
@@ -172,7 +145,7 @@ export default function Dashboard() {
         {/* Row 2: Calendar */}
         <div className="col-span-2 bg-secondary rounded-xl p-4 border border-border shadow-sm flex flex-col items-center">
            {/* Passed appointments correctly */}
-          <CalendarWidget appointments={appointments} />
+          <CalendarWidget appointments={allAppointments} />
         </div>
 
         {/* Row 3: Top Vendors Bar Chart */}
