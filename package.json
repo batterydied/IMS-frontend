@@ -21,6 +21,7 @@
     "plotly.js": "^3.1.2",
     "react": "19.1.0",
     "react-dom": "19.1.0",
+    "react-loader-spinner": "^8.0.0",
     "react-plotly.js": "^2.6.0"
   },
   "devDependencies": {

@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import axios from "axios";
 import CalendarWidget from '@/components/Calendar'; // Adjust path
 import { AnyColor, Colord, colord } from "colord";
-
+import { TailSpin } from 'react-loader-spinner'
 // Dynamically import Plot
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 
@@ -35,11 +35,9 @@ interface InvoiceData {
   all_vendors: Vendor[];
 }
 
-// --- Helper Functions ---
 export const generatePalette = (baseColor: AnyColor | Colord, steps = 5) => {
   const palette = [];
   for (let i = 0; i < steps; i++) {
-    // Lighten logic: Step 0 is original, Step 5 is much lighter
     const newColor = colord(baseColor).lighten(0.05 * i).toHex(); 
     palette.push(newColor);
   }
@@ -49,14 +47,11 @@ export const generatePalette = (baseColor: AnyColor | Colord, steps = 5) => {
 export default function Dashboard() {
   const [data, setData] = useState<InvoiceData | null>(null);
   
-  // Default colors (will be overwritten by CSS vars on mount)
   const [accentColor, setAccentColor] = useState("#008080"); 
   const [mutedColor, setMutedColor] = useState("#888888");
   const [contentColor, setContentColor] = useState("#000000");
 
-  // 1. Initial Setup: Get CSS Vars and Start Polling
   useEffect(() => {
-    // -- CSS Variable Extraction --
     const style = getComputedStyle(document.documentElement);
     
     const rawAccent = style.getPropertyValue("--accent").trim();
@@ -68,7 +63,6 @@ export default function Dashboard() {
     const rawContent = style.getPropertyValue("--content").trim();
     if (rawContent) setContentColor(colord(rawContent).toHex());
 
-    // -- Data Fetching --
     const fetchData = async () => {
       try {
         const res = await axios.get<InvoiceData>("http://127.0.0.1:5000/api/invoices");
@@ -78,16 +72,23 @@ export default function Dashboard() {
       }
     };
 
-    fetchData(); // Initial fetch
-    const interval = setInterval(fetchData, 60000); // Poll every 60s
+    fetchData(); 
+    const interval = setInterval(fetchData, 60000); 
 
     return () => clearInterval(interval);
   }, []);
 
-  // 2. Early Return if no data (Must happen before we try to map arrays)
-  if (!data) return <div className="p-8 text-gray-400">Loading dashboard data...</div>;
+  if (!data) return <div className="flex flex-col w-full justify-center mx-auto items-center mt-40  text-content">
+       <TailSpin
+        height="80"
+        width="80"
+        color={accentColor}
+        ariaLabel="tail-spin-loading"
+        
+      />
+  <div className="p-10">Loading dashboard data...</div>
+  </div>
 
-  // 3. Destructure Data
   const {
     total_revenue,
     unique_vendors,
@@ -96,7 +97,6 @@ export default function Dashboard() {
     all_vendors = [],
   } = data;
 
-  // 4. Prepare Arrays for Plotly
   const months = monthly_sales.map((d) => d.month);
   const monthRevenues = monthly_sales.map((d) => d.revenue ?? 0);
 
@@ -106,8 +106,6 @@ export default function Dashboard() {
   const allVendorNames = all_vendors.map((d) => d.vendor_name);
   const allVendorRevenue = all_vendors.map((d) => d.revenue ?? 0);
 
-  // 5. Generate Palette dynamically based on the actual data length
-  // We use the length of 'all_vendors' because that's where we use the palette
   const pieChartColors = generatePalette(accentColor, all_vendors.length || 1);
 
   const appointments = [
@@ -126,7 +124,7 @@ export default function Dashboard() {
       {/* Grid Layout */}
       <div className="grid grid-cols-1 md:grid-cols-6 gap-6 p-6 w-full">
         
-        {/* KPI Cards */}
+        {/* Cards */}
         <div className="md:col-span-2 bg-secondary rounded-xl p-4 border border-border shadow-sm">
           <h2 className="text-content font-bold">Total Revenue</h2>
           <p className="text-4xl font-bold text-accent">
@@ -198,7 +196,7 @@ export default function Dashboard() {
               paper_bgcolor: "rgba(0,0,0,0)",
               plot_bgcolor: "rgba(0,0,0,0)",
               font: { color: mutedColor },
-              margin: { t: 20, b: 40, l: 120, r: 20 }, // Increased left margin for long names
+              margin: { t: 20, b: 40, l: 120, r: 20 }, 
               yaxis: { automargin: true },
               height: 350,
             }}
@@ -217,7 +215,7 @@ export default function Dashboard() {
               type: "pie",
               hole: 0.5,
               marker: {
-                colors: pieChartColors, // <--- Now uses the CORRECT generated palette
+                colors: pieChartColors, 
               },
               hovertemplate: "<b>%{label}</b><br>Revenue: $%{value:,.0f}<br>Share: %{percent}<extra></extra>",
             }]}
