@@ -45,7 +45,7 @@ export const Sidebar = memo(function Sidebar({handleSignOut, handleToggle, isCol
                     Invoices
                 </div>
                 <div className="text-content2 p-1 min-w-[200px] hover:cursor-pointer" onClick={() => handleSelectView("extract")}>
-                    Extract
+                    Extraction
                 </div>
                 <div className="p-4 flex-1 flex items-end w-full justify-end">
                     <button className="btn bg-red-600 rounded-md border-0" onClick={handleSignOut}>Sign Out

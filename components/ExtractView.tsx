@@ -1,51 +1,6 @@
-import { useRef, useState } from "react"
-import { UploadSVG } from "./SVG"
+import InvoiceUploader from "./InvoiceUploader";
 
 export const ExtractView = () => {
-    const inputRef = useRef<HTMLInputElement>(null)
-    const [isDragging, setIsDragging] = useState(false);
-
-    const handleUpload = ()=>{
-        if(inputRef.current){
-            inputRef.current.click()
-        }
-    }
-
-    const handleUploadFile = (file: File) => {
-        if(file){
-            console.log("Uploaded file:", file)
-        }
-    }
-
-    const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-        e.preventDefault();
-        setIsDragging(false);
-
-        const file = e.dataTransfer.files[0];
-        if (file) {
-            handleUploadFile(file);
-        }
-    }
-
-    const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-        e.preventDefault();
-    }
-
-    const handleDragEnter = () => {
-        setIsDragging(true);
-    }
-
-    const handleDragLeave = () => {
-        setIsDragging(false);
-    }
-
-    const handleFileChangeEvent = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0]
-        if(file){
-            handleUploadFile(file)
-        }
-    }
-    
     return (
         <div className="w-full h-full p-2 flex space-x-2">
             <div className="h-full w-[55%] border-content2/20 border-2 rounded-md flex flex-col">
@@ -91,19 +46,8 @@ export const ExtractView = () => {
                     <button className="btn rounded-md">Push to Dashboard</button>
                 </div>
             </div>
-            <div className={`h-full w-[45%] border-content2/30 border-2 border-dotted rounded-md flex flex-col justify-center items-center space-y-2 ${isDragging && "bg-black/5"}`}
-            onDragEnter={handleDragEnter}
-            onDragLeave={handleDragLeave}
-            onDragOver={handleDragOver}
-            onDrop={handleDrop}
-            >
-                <UploadSVG size={64} className="opacity-60"/>
-                <div className="flex flex-col">
-                    <span className="text-center">Drag and drop file here</span>
-                    <span className="text-center">or Upload</span>
-                </div>
-                <input ref={inputRef} type="file" className="hidden" onChange={handleFileChangeEvent}/>
-                <button className="btn rounded-md" onClick={handleUpload}>Upload</button>
+            <div className="h-full w-[45%] border-content2/30 border-2 border-dotted rounded-md">
+                <InvoiceUploader />
             </div>
         </div>
     )

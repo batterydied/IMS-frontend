@@ -47,7 +47,12 @@ export default function Dashboard() {
     return () => clearInterval(interval);
   }, []);
 
- if (!data) return <p className="text-gray-400">Loading data...</p>;
+ if (!data) return (
+  <div className="page">
+    <span className="text-content2 animate-pulse">Loading data...</span>
+  </div>
+ )
+
 
   const {
     total_revenue,
