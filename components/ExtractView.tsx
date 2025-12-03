@@ -17,8 +17,14 @@ export interface InvoiceData {
 }
 
 export const ExtractView = () => {
-    const [invoiceNumber, setInvoiceNumber] = useState('')
+    const [invoiceNumber, setInvoiceNumber] = useState("")
+    const [vendor, setVendor] = useState("")
+    const [invoiceDate, setInvoiceDate] = useState("")
     const [invoiceItems, setInvoiceItems] = useState<InvoiceItem[]>([])
+
+    const validateInvoice = () => {
+        return invoiceNumber && vendor && invoiceDate && invoiceItems.length != 0
+    }
 
     return (
         <div className="w-full h-full p-2 flex space-x-2">
@@ -28,15 +34,15 @@ export const ExtractView = () => {
                 </div>
                 <div className="flex flex-col px-4 py-2">
                     <span>Invoice Number</span>
-                    <input placeholder="Invoice number" className="input w-full border-content border-2 bg-primary text-content2" type="text"></input>
+                    <input onChange={(e) => setInvoiceNumber(e.target.value)} value={invoiceNumber} placeholder="Invoice number" className="input w-full border-content border-2 bg-primary text-content2" type="text"></input>
                 </div>
                 <div className="flex flex-col px-4 py-2">
                     <span>Vendor</span>
-                    <input placeholder="Vendor" className="input w-full border-content border-2 bg-primary text-content2" type="text"></input>
+                    <input onChange={(e) => setVendor(e.target.value)} value={vendor} placeholder="Vendor" className="input w-full border-content border-2 bg-primary text-content2" type="text"></input>
                 </div>
                 <div className="flex flex-col px-4 py-2 w-full">
                     <span>Invoice Date</span>
-                    <input className="input w-full border-content border-2 bg-primary text-content2" type="date"></input>
+                    <input onChange={(e) => setInvoiceDate(e.target.value)} value={invoiceDate} className="input w-full border-content border-2 bg-primary text-content2" type="date"></input>
                 </div>
                 <div className="flex flex-col p-4 max-h-[300px] overflow-y-auto">
                     <div className="w-full flex justify-between items-center p-1">
@@ -55,7 +61,7 @@ export const ExtractView = () => {
                     </ul>
                 </div>
                 <div className="flex-1 flex justify-end items-end p-4">
-                    <button className="btn rounded-md">Push to Dashboard</button>
+                    <button className={`btn rounded-md border-0 ${!validateInvoice() ? "cursor-not-allowed bg-muted": "border-0 hover:bg-accent"}`}>Push to Dashboard</button>
                 </div>
             </div>
             <div className="h-full w-[45%] border-content2/30 border-2 border-dotted rounded-md">

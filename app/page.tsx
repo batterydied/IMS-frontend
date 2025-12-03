@@ -1,7 +1,7 @@
 "use client"
 import { useSupabase } from "@/contexts/SupabaseProvider"
 import { useRouter } from "next/navigation"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { Sidebar } from "@/components/Sidebar"
 import Dashboard from "@/components/Dashboard"
 import InvoiceList from "@/components/InvoiceList"

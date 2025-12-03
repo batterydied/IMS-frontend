@@ -20,7 +20,7 @@ export const Sidebar = memo(function Sidebar({handleSignOut, handleToggle, isCol
         <div
         className={`${
             isCollapsed ? "w-0 !p-0" : "w-[250px]"
-        } transition-all duration-300 bg-content p-2 overflow-hidden h-full`}
+        } transition-all duration-300 bg-content py-3 px-2 overflow-hidden h-full`}
         >
             <div
             className={`w-full transition-opacity duration-300 flex flex-col h-full space-y-2 ${
@@ -37,7 +37,7 @@ export const Sidebar = memo(function Sidebar({handleSignOut, handleToggle, isCol
                     Extraction
                 </div>
                 <div className="p-4 flex-1 flex items-end w-full justify-end">
-                    <button className="btn bg-accent rounded-md border-0" onClick={handleSignOut}>Sign Out
+                    <button className="btn hover:bg-accent rounded-md border-0" onClick={handleSignOut}>Sign Out
                         <LogOutSVG/>
                     </button>
                 </div>

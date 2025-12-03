@@ -220,8 +220,6 @@ export default function Dashboard() {
               style={{ width: "100%", height: "100%" }}
             />
           </div>
-
       </div>
-    </div>
   );
 }

@@ -104,10 +104,10 @@ export default function InvoiceList() {
         <button
           onClick={handleExport}
           disabled={selectedIds.length === 0}
-          className={`px-4 py-2 rounded font-bold text-content transition
+          className={`px-4 py-2 rounded transition
             ${selectedIds.length > 0 
-              ? "btn border-accent bg-accent hover:bg-accent/90 hover:border-accent/90" 
-              : "!btn cursor-not-allowed"
+              ? "btn bg-accent hover:bg-accent/90 border-0" 
+              : "btn cursor-not-allowed text-content bg-muted"
             }`}
         >
           Export CSV ({selectedIds.length})

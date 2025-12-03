@@ -1,6 +1,8 @@
+"use client";
 import { useRef, useState } from "react"
 import { UploadSVG } from "./SVG"
 import { createClient } from "@supabase/supabase-js"
+import Image from "next/image"
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -14,6 +16,7 @@ const InvoiceUploader = () => {
         const [isUploading, setIsUploading] = useState(false)
         const [isDragging, setIsDragging] = useState(false)
         const [hasServerError, setHasServerError] = useState(false)
+        const [invoiceImg, setInvoiceImg] = useState<string>("")
     
         const handleUpload = ()=>{
             if(inputRef.current){
@@ -24,6 +27,8 @@ const InvoiceUploader = () => {
         const handleUploadFile = async (file: File) => {
             try {
                 setIsUploading(true)
+                const previewUrl = URL.createObjectURL(file);
+                setInvoiceImg(previewUrl);
             // --- STEP 0: Read Session and Set Client Context ---
                     const sessionString = localStorage.getItem(session_key);
                     console.log(session_key)
@@ -125,8 +130,9 @@ const InvoiceUploader = () => {
                     <span className="text-center">or Upload</span>
                 </div>
                 <input ref={inputRef} type="file" className="hidden" onChange={handleFileChangeEvent}/>
-                <button className="btn rounded-md" onClick={handleUpload}>Upload</button>
+                <button className="btn rounded-md hover:bg-accent border-0" onClick={handleUpload}>Upload</button>
                 {hasServerError && <span className="text-red-500">Unable to connect to server, try again</span>}
+                {invoiceImg && <Image src={invoiceImg} alt="Invoice Preview" width={200} height={200} />}
             </div>
         )
 }
