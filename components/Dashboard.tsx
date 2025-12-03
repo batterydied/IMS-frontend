@@ -48,7 +48,7 @@ export default function Dashboard() {
   const [data, setData] = useState<InvoiceData | null>(null);
   
   const [accentColor, setAccentColor] = useState("#008080"); 
-  const [mutedColor, setMutedColor] = useState("#888888");
+  const [borderColor, setBorderColor] = useState("#888888");
   const [contentColor, setContentColor] = useState("#000000");
 
   useEffect(() => {
@@ -57,10 +57,10 @@ export default function Dashboard() {
     const rawAccent = style.getPropertyValue("--accent").trim();
     if (rawAccent) setAccentColor(colord(rawAccent).toHex());
     
-    const rawMuted = style.getPropertyValue("--muted").trim();
-    if (rawMuted) setMutedColor(colord(rawMuted).toHex());
+    const rawBorder = style.getPropertyValue("--border").trim();
+    if (rawBorder) setBorderColor(colord(rawBorder).toHex());
     
-    const rawContent = style.getPropertyValue("--content").trim();
+    const rawContent = style.getPropertyValue("--content2").trim();
     if (rawContent) setContentColor(colord(rawContent).toHex());
 
     const fetchData = async () => {
@@ -78,7 +78,7 @@ export default function Dashboard() {
     return () => clearInterval(interval);
   }, []);
 
-  if (!data) return <div className="flex flex-col w-full justify-center mx-auto items-center mt-40  text-content">
+  if (!data) return <div className="flex flex-col w-full justify-center mx-auto items-center mt-40  text-content2">
        <TailSpin
         height="80"
         width="80"
@@ -117,34 +117,32 @@ export default function Dashboard() {
 
   return (
     <div className="flex flex-col w-[95%] justify-center mx-auto items-center">
-      <h1 className="text-center text-3xl font-bold p-8 color-content">
-        Store Dashboard
-      </h1>
+
 
       {/* Grid Layout */}
       <div className="grid grid-cols-1 md:grid-cols-6 gap-6 p-6 w-full">
         
         {/* Cards */}
         <div className="md:col-span-2 bg-secondary rounded-xl p-4 border border-border shadow-sm">
-          <h2 className="text-content font-bold">Total Revenue</h2>
+          <h2 className="text-content2 font-bold">Total Revenue</h2>
           <p className="text-4xl font-bold text-accent">
             ${total_revenue.toLocaleString()}
           </p>
         </div>
         <div className="md:col-span-2 bg-secondary rounded-xl p-4 border border-border shadow-sm">
-          <h2 className="text-content font-bold">Unique Vendors</h2>
+          <h2 className="text-content2 font-bold">Unique Vendors</h2>
           <p className="text-4xl font-bold text-accent">
             {unique_vendors}
           </p>
         </div>
         <div className="md:col-span-2 bg-secondary rounded-xl p-4 border border-border shadow-sm">
-          <h2 className="text-content font-bold">Status</h2>
+          <h2 className="text-content2 font-bold">Status</h2>
           <p className="text-4xl font-bold text-accent">Active</p>
         </div>
 
         {/* Row 2: Monthly Sales (Big Chart) */}
         <div className="col-span-4 bg-secondary rounded-xl p-4 border border-border shadow-sm">
-          <h2 className="mb-2 text-lg font-bold text-content">Monthly Sales</h2>
+          <h2 className="mb-2 text-lg font-bold text-content2">Monthly Sales</h2>
           <Plot
             data={[{
               x: months,
@@ -157,13 +155,13 @@ export default function Dashboard() {
             layout={{
               paper_bgcolor: "rgba(0,0,0,0)",
               plot_bgcolor: "rgba(0,0,0,0)",
-              font: { color: mutedColor },
+              font: { color: contentColor },
               xaxis: { showgrid: false },
               yaxis: { 
                 showgrid: true, 
-                gridcolor: "rgba(128,128,128,0.2)", // Subtle grid
+                gridcolor: borderColor, 
                 zeroline: false, 
-                tickfont: { color: mutedColor } 
+                tickfont: { color: borderColor } 
               },
               margin: { t: 20, b: 40, l: 60, r: 20 },
               height: 350,
@@ -182,7 +180,7 @@ export default function Dashboard() {
 
         {/* Row 3: Top Vendors Bar Chart */}
         <div className="col-span-3 bg-secondary rounded-xl p-4 border border-border shadow-sm">
-          <h2 className="mb-2 text-lg font-bold text-content">Top Vendors</h2>
+          <h2 className="mb-2 text-lg font-bold text-content2">Top Vendors</h2>
           <Plot
             data={[{
               x: vendorRevenues,
@@ -195,7 +193,7 @@ export default function Dashboard() {
             layout={{
               paper_bgcolor: "rgba(0,0,0,0)",
               plot_bgcolor: "rgba(0,0,0,0)",
-              font: { color: mutedColor },
+              font: { color: contentColor },
               margin: { t: 20, b: 40, l: 120, r: 20 }, 
               yaxis: { automargin: true },
               height: 350,
@@ -207,7 +205,7 @@ export default function Dashboard() {
 
         {/* Row 3: All Vendors Pie Chart */}
         <div className="col-span-3 min-h-100 bg-secondary rounded-xl p-4 border border-border shadow-sm">
-          <h2 className="mb-2 text-lg font-bold text-content">Vendor Share</h2>
+          <h2 className="mb-2 text-lg font-bold text-content2">Vendor Share</h2>
           <Plot
             data={[{
               labels: allVendorNames,
@@ -222,7 +220,7 @@ export default function Dashboard() {
             layout={{
               paper_bgcolor: "rgba(0,0,0,0)",
               plot_bgcolor: "rgba(0,0,0,0)",
-              font: { color: mutedColor },
+              font: { color: contentColor },
               margin: { t: 20, b: 20, l: 20, r: 20 },
               height: 350,
               showlegend: true

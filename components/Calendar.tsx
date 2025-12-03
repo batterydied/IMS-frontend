@@ -27,22 +27,19 @@ const CalendarWidget = ({ appointments = [] }: CalendarWidgetProps) => {
     const [currentMonth, setCurrentMonth] = useState(new Date());
     const [selectedDate, setSelectedDate] = useState(new Date());
 
-  // --- Helpers to navigate months ---
   const nextMonth = () => setCurrentMonth(addMonths(currentMonth, 1));
   const prevMonth = () => setCurrentMonth(subMonths(currentMonth, 1));
 
-  // --- Check if a specific day has an appointment ---
     const getAppointments = (day: Date) => {
         return appointments.filter((appt) => 
         isSameDay(parseISO(appt.date), day)
         );
     };
 
-  // --- Render the Header (Month Name + Arrows) ---
   const renderHeader = () => {
     return (
       <div className="flex justify-between items-center mb-4 px-2">
-        <span className="text-content text-lg font-bold">
+        <span className="text-content2 text-lg font-bold">
           {format(currentMonth, "MMMM yyyy")}
         </span>
         <div className="flex gap-2">
@@ -64,7 +61,7 @@ const CalendarWidget = ({ appointments = [] }: CalendarWidgetProps) => {
 
     for (let i = 0; i < 7; i++) {
       days.push(
-        <div key={i} className="text-content text-xs font-medium uppercase text-center py-2">
+        <div key={i} className="text-content2 text-xs font-medium uppercase text-center py-2">
           {format(addDays(startDate, i), "eee")}
         </div>
       );
@@ -104,7 +101,7 @@ const CalendarWidget = ({ appointments = [] }: CalendarWidgetProps) => {
             key={day.toString()}
             className={`
             relative group flex flex-col items-center justify-center h-14 w-full cursor-pointer rounded-lg transition
-            ${!isCurrentMonth ? "text-content/40" : " text-content"}
+            ${!isCurrentMonth ? "text-content2/40" : " text-content2"}
             ${isSelected ? "bg-muted" : "hover:bg-muted/40"}
             `}
             onClick={() => setSelectedDate(cloneDay)}
@@ -120,7 +117,7 @@ const CalendarWidget = ({ appointments = [] }: CalendarWidgetProps) => {
               {formattedDate}
             </span>
 
-            {/* Blue Bar Indicator */}
+            {/* Bar Indicator */}
             {hasEvent && (
               <div className="absolute bottom-2 w-5 h-1 rounded-full bg-accent mt-1"></div>
             )}
@@ -130,7 +127,7 @@ const CalendarWidget = ({ appointments = [] }: CalendarWidgetProps) => {
               <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-max hidden group-hover:block z-50">
                 <div className="bg-accent text-content text-xs rounded py-1 px-1 shadow-xl border border-border">
                   {dayAppointments.map((appt, idx) => (
-                    <div key={idx} className="whitespace-nowrap">
+                    <div key={idx} className="whitespace-nowrap p-1 font-bold">
                       {appt.title}
                     </div>
                   ))}

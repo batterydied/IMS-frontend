@@ -56,11 +56,11 @@ export default function SignInForm(){
     return (
         <div className="flex flex-col w-[80%] space-y-2 p-2">
             <form className="space-y-4" onSubmit={handleSignIn}>
-                <input name="email" placeholder="Email" className="input input-no-focus w-full" value={email} onChange={(e)=>{
+                <input name="email" placeholder="Email" className="input input-no-focus w-full bg-gray-800 border-0" value={email} onChange={(e)=>{
                     setEmail(e.currentTarget.value)
                 }}/>
                 <div>
-                    <label className="input input-no-focus w-full">
+                    <label className="input input-no-focus w-full rounded-sm bg-gray-800 border-0">
                         <input name="password" placeholder="Password" value={password} type={isPasswordHidden ? "password" : "text"} onChange={(e)=>{
                             setPassword(e.currentTarget.value)
                         }}/>
@@ -75,8 +75,8 @@ export default function SignInForm(){
                 or
                 <div className='w-[47%] h-0.5 bg-muted'/>
             </div>
-            <button onClick={handleGoogleSignIn} className="hover:cursor-pointer text-content p-2 rounded-md hover:text-accent flex justify-center">
-                <div className="flex flex-row space-x-3">
+            <button onClick={handleGoogleSignIn} className="hover:cursor-pointer text-content p-2 rounded-md flex justify-center">
+                <div className="flex flex-row space-x-3 hover:bg-gray-800 p-2 rounded-sm">
                     <Image src="/google.svg" alt="Google Icon" width={20} height={20}/>
                     <div>Continue with Google</div>
                 </div>

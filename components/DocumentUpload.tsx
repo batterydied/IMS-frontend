@@ -97,7 +97,7 @@ export default function InvoiceUploader() {
       <button 
         onClick={handleUpload} // Clicks the hidden input
         disabled={uploading}
-        className="rounded-md btn bg-accent/80 border-transparent hover:bg-accent group text-content"      >
+        className="rounded-md btn bg-accent/80 border-transparent hover:bg-accent group text-x"      >
         {/* 3. Use the imported SVG */}
         <UploadSVG className="w-6 h-6" /> 
         

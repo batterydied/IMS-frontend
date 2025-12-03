@@ -2,12 +2,13 @@
 @plugin "daisyui";
 
 :root {
-  --primary: #37353E;   
-  --secondary: #44444E; 
-  --accent: #EB3678;
-  --muted: #715A5A;
+  --primary: #E3E3E3;   
+  --secondary: #F8F4EC; 
+  --accent: #1A43BF;
+  --muted: #A3AABE;
   --border: #d3d3d3;
   --content: #D3DAD9;
+  --content2: #222222;
 }
 
 @theme inline {
@@ -17,12 +18,13 @@
   --color-accent: var(--accent);
   --color-border: var(--border);
   --color-content: var(--content);
+  --color-content2: var(--content2);
   --font-montserrat: var(--font-montserrat);
 }
 
 body {
   background: var(--primary);
-  color: var(--content);
+  color: var(--content2);
   font-family: var(--font-montserrat), sans-serif;
   width: 100vw;
   height: 100vh;
@@ -67,7 +69,19 @@ select:-webkit-autofill,
 select:-webkit-autofill:hover,
 select:-webkit-autofill:focus {
   border: 1px solid transparent;
-  -webkit-text-fill-color: #F1F1F1;
+  -webkit-text-fill-color: none;
   -webkit-box-shadow: 0 0 0px 1000px transparent inset;
   transition: background-color 5000s ease-in-out 0s;
 };
+
+input:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.4) brightness(0.8);
+  opacity: 1;
+  cursor: pointer;
+}
+

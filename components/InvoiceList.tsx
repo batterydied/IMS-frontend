@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import InvoiceItem from "./InvoiceItem";
 
 type Invoice = {
@@ -10,9 +10,41 @@ type Invoice = {
   total_amount: number;
 };
 
-export default function InvoiceList({ invoices }: { invoices: Invoice[] }) {
+async function getInvoices() {
+  const userId = "123"; 
+  const res = await fetch(`http://127.0.0.1:5000/api/all-invoices`, {
+    cache: "no-store",
+  });
+
+  if (!res.ok) throw new Error("Failed to fetch");
+  return res.json();
+}
+
+
+export default function InvoiceList() {
+  const [invoices, setInvoices] = useState<Invoice[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+
+ useEffect(() => {
+    async function fetchData() {
+      try {
+        const res = await fetch("http://127.0.0.1:5000/api/all-invoices");
+        
+        if (!res.ok) throw new Error("Failed to fetch");
+        
+        const data = await res.json();
+        setInvoices(data);
+      } catch (error) {
+        console.error("Error loading invoices:", error);
+      } finally {
+        setLoading(false); 
+      }
+    }
+
+    fetchData();
+  }, []); 
 
   const filteredInvoices = invoices.filter((invoice) => {
     const term = searchTerm.toLowerCase();
@@ -22,17 +54,18 @@ export default function InvoiceList({ invoices }: { invoices: Invoice[] }) {
     );
   });
 
+
   const toggleSelection = (id: string) => {
     setSelectedIds((prev) => 
       prev.includes(id) 
-        ? prev.filter((itemId) => itemId !== id) // Uncheck
+        ? prev.filter((itemId) => itemId !== id) 
         : [...prev, id] // Check
     );
   };
 
   //TODO actual logic neets to do an api call to download all the data
   const handleExport = () => {
-    const selectedInvoices = invoices.filter((inv) => selectedIds.includes(inv.id));
+    const selectedInvoices = invoices.filter((inv: Invoice) => selectedIds.includes(inv.id));
     
     if (selectedInvoices.length === 0) return;
 
@@ -83,7 +116,7 @@ export default function InvoiceList({ invoices }: { invoices: Invoice[] }) {
 
       <div className="flex flex-col gap-4">
         {filteredInvoices.length > 0 ? (
-          filteredInvoices.map((invoice) => (
+          filteredInvoices.map((invoice: Invoice) => (
             <InvoiceItem
               key={invoice.id}
               id={invoice.id}
