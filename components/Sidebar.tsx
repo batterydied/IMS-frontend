@@ -5,7 +5,6 @@ import { ViewMode }from "@/app/page";
 interface Sidebar {
     handleToggle: () => void;
     isCollapsed: boolean;
-    query: string;
     handleSelectView: (view: ViewMode) => void;
     handleSignOut: () => void;
 }
@@ -14,7 +13,7 @@ export const Sidebar = memo(function Sidebar({handleSignOut, handleToggle, isCol
     return (
         <>
         <div className="w-[50px] h-full bg-content flex justify-center p-2 border-r border-muted items-start">
-            <div onClick={handleToggle} className="hover:cursor-pointer hover:bg-secondary text-content2 p-1 rounded-sm h-auto">
+            <div onClick={handleToggle} className="hover:cursor-pointer hover:bg-accent hover:text-content text-content2 p-1 rounded-sm h-auto">
                 <MenuSVG/>
             </div>
         </div>

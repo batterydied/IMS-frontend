@@ -106,7 +106,7 @@ export default function InvoiceList() {
           disabled={selectedIds.length === 0}
           className={`px-4 py-2 rounded font-bold text-white transition
             ${selectedIds.length > 0 
-              ? "bg-green-600 hover:bg-green-700" 
+              ? "bg-accent" 
               : "bg-gray-600 cursor-not-allowed opacity-50"
             }`}
         >

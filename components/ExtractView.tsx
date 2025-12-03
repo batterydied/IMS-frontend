@@ -2,9 +2,23 @@ import { useState } from "react";
 import InvoiceUploader from "./InvoiceUploader";
 import { PlusSVG } from "./SVG";
 
+export interface InvoiceItem {
+  description: string;
+  quantity: string;
+  price: string;
+  total: string;
+}
+
+export interface InvoiceData {
+  invoiceNumber: string;
+  vendor: string;
+  invoiceDate: string;
+  items: InvoiceItem[];
+}
+
 export const ExtractView = () => {
-    const [invoiceNumber, setInvoiceNumber] = useState('') //str
-    const [vendor, setVendor] = useState('')
+    const [invoiceNumber, setInvoiceNumber] = useState('')
+    const [invoiceItems, setInvoiceItems] = useState<InvoiceItem[]>([])
 
     return (
         <div className="w-full h-full p-2 flex space-x-2">
