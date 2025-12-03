@@ -1,45 +1,51 @@
-import { useCallback, useRef, useState } from "react"
+import { useRef, useState } from "react"
 import { UploadSVG } from "./SVG"
 
 export const ExtractView = () => {
     const inputRef = useRef<HTMLInputElement>(null)
     const [isDragging, setIsDragging] = useState(false);
 
-    const handleUpload = useCallback(()=>{
+    const handleUpload = ()=>{
         if(inputRef.current){
             inputRef.current.click()
         }
-    }, [])
+    }
 
-    const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0]
+    const handleUploadFile = (file: File) => {
         if(file){
-        console.log("Uploaded file:", file)
+            console.log("Uploaded file:", file)
         }
-    }, [])
+    }
 
-    function handleDrop(e: React.DragEvent<HTMLDivElement>) {
+    const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
         e.preventDefault();
         setIsDragging(false);
 
         const file = e.dataTransfer.files[0];
         if (file) {
-            handleFileChange({ target: { files: [file] }} as any);
+            handleUploadFile(file);
         }
-        }
+    }
 
-        function handleDragOver(e: React.DragEvent<HTMLDivElement>) {
+    const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
         e.preventDefault();
-        }
+    }
 
-        function handleDragEnter() {
+    const handleDragEnter = () => {
         setIsDragging(true);
-        }
+    }
 
-        function handleDragLeave() {
+    const handleDragLeave = () => {
         setIsDragging(false);
-        }
+    }
 
+    const handleFileChangeEvent = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0]
+        if(file){
+            handleUploadFile(file)
+        }
+    }
+    
     return (
         <div className="w-full h-full p-2 flex space-x-2">
             <div className="h-full w-[55%] border-content2/20 border-2 rounded-md flex flex-col">
@@ -96,7 +102,7 @@ export const ExtractView = () => {
                     <span className="text-center">Drag and drop file here</span>
                     <span className="text-center">or Upload</span>
                 </div>
-                <input ref={inputRef} type="file" className="hidden" onChange={handleFileChange}/>
+                <input ref={inputRef} type="file" className="hidden" onChange={handleFileChangeEvent}/>
                 <button className="btn rounded-md" onClick={handleUpload}>Upload</button>
             </div>
         </div>
