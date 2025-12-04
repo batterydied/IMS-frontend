@@ -1,6 +1,7 @@
 import { useState } from "react";
 import InvoiceUploader from "./InvoiceUploader";
 import { PlusSVG } from "./SVG";
+import ItemModal from "./ItemModal";
 
 export interface InvoiceItem {
   description: string;
@@ -21,9 +22,11 @@ export const ExtractView = () => {
     const [vendor, setVendor] = useState("")
     const [invoiceDate, setInvoiceDate] = useState("")
     const [invoiceItems, setInvoiceItems] = useState<InvoiceItem[]>([])
+    const [invoiceImg, setInvoiceImg] = useState("")
+    const [openModal, setOpenModal] = useState(false)
 
     const validateInvoice = () => {
-        return invoiceNumber && vendor && invoiceDate && invoiceItems.length != 0
+        return invoiceNumber && vendor && invoiceDate && invoiceItems.length != 0 && invoiceImg
     }
 
     return (
@@ -47,7 +50,7 @@ export const ExtractView = () => {
                 <div className="flex flex-col p-4 max-h-[300px] overflow-y-auto">
                     <div className="w-full flex justify-between items-center p-1">
                         <span>Items</span>
-                        <PlusSVG className="hover:text-accent hover:cursor-pointer"/>
+                        <PlusSVG className="hover:text-accent hover:cursor-pointer" onClick={()=>setOpenModal(true)}/>
                     </div>
                     <ul className="w-full">
                         <li className="rounded-t-md border-2 border-content py-1 px-3">
@@ -65,8 +68,11 @@ export const ExtractView = () => {
                 </div>
             </div>
             <div className="h-full w-[45%] border-content2/30 border-2 border-dotted rounded-md">
-                <InvoiceUploader setInvoiceNumber={setInvoiceNumber} setVendor={setVendor} setInvoiceDate={setInvoiceDate} setInvoiceItems={setInvoiceItems}/>
+                <InvoiceUploader invoiceImg={invoiceImg} setInvoiceImg={setInvoiceImg} setInvoiceNumber={setInvoiceNumber} setVendor={setVendor} setInvoiceDate={setInvoiceDate} setInvoiceItems={setInvoiceItems}/>
             </div>
+            {openModal && 
+            <ItemModal setShouldOpen={setOpenModal} />
+            }
         </div>
     )
 }

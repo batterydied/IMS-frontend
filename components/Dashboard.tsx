@@ -43,7 +43,7 @@ export const generatePalette = (baseColor: AnyColor | Colord, steps = 5) => {
   return palette;
 };
 
-export default function Dashboard() {
+export default function Dashboard({ isCollapsed }: { isCollapsed: boolean }) {
   const [data, setData] = useState<InvoiceData | null>(null);
   
   const [accentColor, setAccentColor] = useState("#008080"); 
@@ -75,7 +75,7 @@ export default function Dashboard() {
     const interval = setInterval(fetchData, 60000); 
 
     return () => clearInterval(interval);
-  }, []);
+  }, [isCollapsed]);
 
  if (!data) return (
   <div className="page">

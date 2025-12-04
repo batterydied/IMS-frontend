@@ -17,14 +17,15 @@ interface InvoiceUploader {
     setVendor: (data: string) => void;
     setInvoiceDate: (data: string) => void;
     setInvoiceItems: (data: InvoiceItem[]) => void;
+    invoiceImg: string;
+    setInvoiceImg: (data: string) => void
 }
 
-const InvoiceUploader = ({setInvoiceNumber, setVendor, setInvoiceDate, setInvoiceItems}: InvoiceUploader) => {
+const InvoiceUploader = ({invoiceImg, setInvoiceImg, setInvoiceNumber, setVendor, setInvoiceDate, setInvoiceItems}: InvoiceUploader) => {
     const inputRef = useRef<HTMLInputElement>(null)
         const [isUploading, setIsUploading] = useState(false)
         const [isDragging, setIsDragging] = useState(false)
         const [hasServerError, setHasServerError] = useState(false)
-        const [invoiceImg, setInvoiceImg] = useState<string>("")
     
         const getInvoiceDate = (date: string | null): string => {
             if (!date) {
