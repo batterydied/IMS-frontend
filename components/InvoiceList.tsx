@@ -5,14 +5,13 @@ import InvoiceItem from "./InvoiceItem";
 
 type Invoice = {
   id: string;
-  vendor_name: string;
-  invoice_date: string;
-  total_amount: number;
+  vendor_name?: string;
+  invoice_date?: string;
+  total_amount?: number;
 };
 
 async function getInvoices() {
-  const userId = "123"; 
-  const res = await fetch(`http://127.0.0.1:5000/api/all-invoices`, {
+  const res = await fetch("http://127.0.0.1:5000/api/all-invoices", {
     cache: "no-store",
   });
 
@@ -20,79 +19,78 @@ async function getInvoices() {
   return res.json();
 }
 
-
 export default function InvoiceList() {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
- useEffect(() => {
+  useEffect(() => {
     async function fetchData() {
       try {
-        const res = await fetch("http://127.0.0.1:5000/api/all-invoices");
-        
-        if (!res.ok) throw new Error("Failed to fetch");
-        
-        const data = await res.json();
+        const data = await getInvoices();
         setInvoices(data);
       } catch (error) {
         console.error("Error loading invoices:", error);
       } finally {
-        setLoading(false); 
+        setLoading(false);
       }
     }
 
     fetchData();
-  }, []); 
+  }, []);
 
   const filteredInvoices = invoices.filter((invoice) => {
     const term = searchTerm.toLowerCase();
-    return (
-      invoice.vendor_name.toLowerCase().includes(term) ||
-      invoice.id.toString().includes(term)
-    );
+    const vendor = invoice.vendor_name?.toLowerCase() || "";
+    const id = invoice.id?.toString().toLowerCase() || "";
+    return vendor.includes(term) || id.includes(term);
   });
 
-
   const toggleSelection = (id: string) => {
-    setSelectedIds((prev) => 
-      prev.includes(id) 
-        ? prev.filter((itemId) => itemId !== id) 
-        : [...prev, id] // Check
+    setSelectedIds((prev) =>
+      prev.includes(id)
+        ? prev.filter((itemId) => itemId !== id)
+        : [...prev, id]
     );
   };
 
-  //TODO actual logic neets to do an api call to download all the data
   const handleExport = () => {
-    const selectedInvoices = invoices.filter((inv: Invoice) => selectedIds.includes(inv.id));
-    
+    const selectedInvoices = invoices.filter((inv) =>
+      selectedIds.includes(inv.id)
+    );
+
     if (selectedInvoices.length === 0) return;
 
-    const headers = ["ID", "Description", "Date", "Price"];
+    const headers = ["ID", "Vendor", "Date", "Total"];
 
-    const rows = selectedInvoices.map(inv => [
-      `"${inv.id}"`, 
-      `"${inv.vendor_name}"`, 
-      `"${inv.invoice_date}"`, 
-      `"${inv.total_amount}"`
-    ].join(","));
+    const rows = selectedInvoices.map((inv) =>
+      [
+        `"${inv.id}"`,
+        `"${inv.vendor_name || ""}"`,
+        `"${inv.invoice_date || ""}"`,
+        `"${inv.total_amount ?? 0}"`,
+      ].join(",")
+    );
 
     const csvContent = [headers.join(","), ...rows].join("\n");
-
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
+
     const link = document.createElement("a");
-    link.href = url;
+    link.href = URL.createObjectURL(blob);
     link.setAttribute("download", "selected_invoices.csv");
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   };
 
+  if (loading) {
+    return <p className="text-content2 p-4">Loading invoices...</p>;
+  }
+
   return (
-    <div className="flex flex-col gap-6 w-full h-full overflow-scroll">
-      <div className="flex gap-4 ">
+    <div className="flex flex-col gap-6 w-full h-full overflow-auto">
+      <div className="flex gap-4">
         <input
           type="text"
           placeholder="Search invoices..."
@@ -100,14 +98,15 @@ export default function InvoiceList() {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-        
+
         <button
           onClick={handleExport}
           disabled={selectedIds.length === 0}
           className={`px-4 py-2 rounded transition
-            ${selectedIds.length > 0 
-              ? "btn bg-accent hover:bg-accent/90 border-0" 
-              : "btn cursor-not-allowed text-content bg-muted"
+            ${
+              selectedIds.length > 0
+                ? "btn bg-accent hover:bg-accent/90 border-0"
+                : "btn cursor-not-allowed text-content bg-muted"
             }`}
         >
           Export CSV ({selectedIds.length})
@@ -116,14 +115,13 @@ export default function InvoiceList() {
 
       <div className="flex flex-col gap-4">
         {filteredInvoices.length > 0 ? (
-          filteredInvoices.map((invoice: Invoice) => (
+          filteredInvoices.map((invoice) => (
             <InvoiceItem
               key={invoice.id}
               id={invoice.id}
-              description={invoice.vendor_name}
-              amount={invoice.total_amount}
-              date={invoice.invoice_date}
-              // Pass selection props down
+              description={invoice.vendor_name || ""}
+              amount={invoice.total_amount ?? 0}
+              date={invoice.invoice_date || ""}
               isSelected={selectedIds.includes(invoice.id)}
               onToggle={toggleSelection}
             />
