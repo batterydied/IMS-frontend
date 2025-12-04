@@ -29,6 +29,7 @@ const CalendarWidget = ({ appointments = [] }: CalendarWidgetProps) => {
   const prevMonth = () => setCurrentMonth(subMonths(currentMonth, 1));
 
     const getAppointments = (day: Date) => {
+        
         return appointments.filter((appt) => 
         isSameDay(parseISO(appt.invoice_date), day)
         );
@@ -67,14 +68,10 @@ const CalendarWidget = ({ appointments = [] }: CalendarWidgetProps) => {
     return <div className="grid grid-cols-7 mb-2">{days}</div>;
   };
 
-// --- Render the Actual Dates ---
   const renderCells = () => {
     const monthStart = startOfMonth(currentMonth);
-    // const monthEnd = endOfMonth(monthStart); // <--- No longer needed for loop limit
     const startDate = startOfWeek(monthStart);
 
-    // FIXED: Force exactly 42 days (6 rows x 7 days) to prevent layout jumping
-    // We add 41 because startDate is day 1.
     const endDate = addDays(startDate, 41);
 
     const rows = [];
@@ -90,7 +87,6 @@ const CalendarWidget = ({ appointments = [] }: CalendarWidgetProps) => {
         const isSelected = isSameDay(day, selectedDate);
         const isCurrentMonth = isSameMonth(day, monthStart);
 
-        // 1. Get the actual data for the day
         const dayAppointments = getAppointments(day);
         const hasEvent = dayAppointments.length > 0;
 
