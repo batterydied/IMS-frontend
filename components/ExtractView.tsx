@@ -2,12 +2,14 @@ import { useState } from "react";
 import InvoiceUploader from "./InvoiceUploader";
 import { PlusSVG } from "./SVG";
 import ItemModal from "./ItemModal";
+import UpdateItemModal from "./UpdateItemModal";
 
 export interface InvoiceItem {
-  description: string;
-  quantity: string;
-  price: string;
-  total: string;
+    itemId: string;
+    description: string;
+    quantity: string;
+    price: string;
+    total: string;
 }
 
 export interface InvoiceData {
@@ -24,9 +26,44 @@ export const ExtractView = () => {
     const [invoiceItems, setInvoiceItems] = useState<InvoiceItem[]>([])
     const [invoiceImg, setInvoiceImg] = useState("")
     const [openModal, setOpenModal] = useState(false)
+    const [selectedItem, setSelectedItem] = useState<InvoiceItem | null>(null)
+
+    const handleUpdateItem = (item: InvoiceItem) => {
+        setInvoiceItems(prev => prev.map(i => i.itemId == item.itemId ? item : i))
+        setSelectedItem(null)
+    }
+
+    const handleDeleteItem = (itemId: string) => {
+        setInvoiceItems(prev => prev.filter(i => i.itemId != itemId))
+        setSelectedItem(null)
+    }
 
     const validateInvoice = () => {
         return invoiceNumber && vendor && invoiceDate && invoiceItems.length != 0 && invoiceImg
+    }
+
+    const handleAddItem = (item: InvoiceItem) => {
+        setInvoiceItems(prev => [...prev, item])
+        setOpenModal(false)
+    }
+
+    const renderItems = () => {
+        return invoiceItems.map(item => (
+            <li onClick={() => {
+                if(selectedItem?.itemId !== item.itemId){
+                    setSelectedItem(item)
+                }else{
+                    setSelectedItem(null)
+                }
+            }} key={item.itemId} className="hover:cursor-pointer hover:bg-muted border-2 border-t-0 border-content py-1 px-3">
+                <div className="grid grid-cols-[2fr_1fr_1fr_1fr]">
+                    <span>{item.description}</span>
+                    <span>{item.quantity}</span>
+                    <span>{item.price}</span>
+                    <span>{item.total}</span>
+                </div>
+            </li>
+        ))
     }
 
     return (
@@ -61,6 +98,7 @@ export const ExtractView = () => {
                                 <span>Total</span>
                             </div>
                         </li>
+                        {renderItems()}
                     </ul>
                 </div>
                 <div className="flex-1 flex justify-end items-end p-4">
@@ -71,7 +109,10 @@ export const ExtractView = () => {
                 <InvoiceUploader invoiceImg={invoiceImg} setInvoiceImg={setInvoiceImg} setInvoiceNumber={setInvoiceNumber} setVendor={setVendor} setInvoiceDate={setInvoiceDate} setInvoiceItems={setInvoiceItems}/>
             </div>
             {openModal && 
-            <ItemModal setShouldOpen={setOpenModal} />
+            <ItemModal setShouldOpen={setOpenModal} addItem={handleAddItem} />
+            }
+            {selectedItem &&
+            <UpdateItemModal selectedItem={selectedItem} setSelectedItem={setSelectedItem} updateItem={handleUpdateItem} deleteItem={handleDeleteItem} />
             }
         </div>
     )

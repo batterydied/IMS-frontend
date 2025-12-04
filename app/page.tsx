@@ -11,7 +11,7 @@ import React from "react"
 export type ViewMode = "dashboard" | "search" | "extract";
 
 const VIEWS = {
-  dashboard: <Dashboard />,
+  dashboard: <Dashboard isCollapsed={true} />,
   search: <InvoiceList />,
   extract: <ExtractView />,
 } as const;
