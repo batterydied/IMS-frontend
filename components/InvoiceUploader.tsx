@@ -3,7 +3,8 @@ import { memo, useRef, useState } from "react"
 import { UploadSVG } from "./SVG"
 import { createClient } from "@supabase/supabase-js"
 import Image from "next/image"
-import { InvoiceItem } from "./ExtractView";
+import { InvoiceItem } from "./ExtractView"
+import { v4 as uuid } from "uuid"
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -98,6 +99,16 @@ const InvoiceUploader = ({invoiceImg, setInvoiceImg, setInvoiceNumber, setVendor
                         setInvoiceItems([])
                         setInvoiceNumber(data.invoice_number)
                         setVendor(data.vendor_name)
+
+                        setInvoiceItems(data.items.map(item => {
+                            return {
+                                description: item.description,
+                                itemId: uuid(),
+                                quantity: item.quantity,
+                                price: item.unit_price,
+                                total: item.line_total
+                            }
+                        }))
                     }
                     
                     setHasServerError(false)
