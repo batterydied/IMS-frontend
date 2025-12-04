@@ -86,7 +86,6 @@ const InvoiceUploader = ({setTotal, invoiceImg, setInvoiceImg, setInvoiceNumber,
     
                 console.log("Supabase Upload Successful:", uploadData.path)
     
-                // --- STEP 2: Notify Python Backend (Send JSON) ---
                 const response = await fetch("http://localhost:5000/api/process-invoice", {
                     method: "POST",
                     headers: {

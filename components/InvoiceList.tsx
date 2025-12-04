@@ -5,7 +5,7 @@ import InvoiceItem from "./InvoiceItem";
 
 type Invoice = {
   id: string;
-  description: string;
+  vendor_name: string;
   invoice_date: string;
   total_amount: number;
 };
@@ -49,7 +49,7 @@ export default function InvoiceList() {
   const filteredInvoices = invoices.filter((invoice) => {
     const term = searchTerm.toLowerCase();
     return (
-      invoice.description.toLowerCase().includes(term) ||
+      invoice.vendor_name.toLowerCase().includes(term) ||
       invoice.id.toString().includes(term)
     );
   });
@@ -73,7 +73,7 @@ export default function InvoiceList() {
 
     const rows = selectedInvoices.map(inv => [
       `"${inv.id}"`, 
-      `"${inv.description}"`, 
+      `"${inv.vendor_name}"`, 
       `"${inv.invoice_date}"`, 
       `"${inv.total_amount}"`
     ].join(","));
@@ -120,7 +120,7 @@ export default function InvoiceList() {
             <InvoiceItem
               key={invoice.id}
               id={invoice.id}
-              description={invoice.description}
+              description={invoice.vendor_name}
               amount={invoice.total_amount}
               date={invoice.invoice_date}
               // Pass selection props down
