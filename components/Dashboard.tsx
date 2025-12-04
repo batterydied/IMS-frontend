@@ -5,34 +5,11 @@ import dynamic from "next/dynamic";
 import axios from "axios";
 import CalendarWidget from '@/components/Calendar';
 import { AnyColor, Colord, colord } from "colord";
+import { TailSpin } from 'react-loader-spinner'
+import type { InvoiceData } from "@/types/dashboard";
 // Dynamically import Plot
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 
-// --- Interfaces ---
-interface MonthlySale {
-  month: string;
-  revenue: number;
-}
-
-interface Vendor {
-  vendor_name: string;
-  revenue: number;
-}
-
-interface Product {
-  description: string;
-  quantity: number;
-}
-
-interface InvoiceData {
-  total_revenue: number;
-  unique_vendors: number;
-  monthly_sales: MonthlySale[];
-  top_vendors: Vendor[];
-  top_products_qty: Product[];
-  product_sales: Product[];
-  all_vendors: Vendor[];
-}
 
 export const generatePalette = (baseColor: AnyColor | Colord, steps = 5) => {
   const palette = [];
@@ -88,28 +65,25 @@ export default function Dashboard({ isCollapsed }: { isCollapsed: boolean }) {
     total_revenue,
     unique_vendors,
     monthly_sales = [],
-    top_vendors = [],
+    top_products_qty = [],
     all_vendors = [],
+    all_appointments = [],
   } = data;
-
   const months = monthly_sales.map((d) => d.month);
   const monthRevenues = monthly_sales.map((d) => d.revenue ?? 0);
 
-  const vendorNames = top_vendors.map((d) => d.vendor_name);
-  const vendorRevenues = top_vendors.map((d) => d.revenue ?? 0);
+  const productNames = top_products_qty.map((d) => d.description);
+  const productRevenues = top_products_qty.map((d) => d.item_revenue ?? 0);
 
   const allVendorNames = all_vendors.map((d) => d.vendor_name);
   const allVendorRevenue = all_vendors.map((d) => d.revenue ?? 0);
 
   const pieChartColors = generatePalette(accentColor, all_vendors.length || 1);
 
-  const appointments = [
-    { date: "2025-12-05", title: "Vendor Meeting" },
-    { date: "2025-12-12", title: "Inventory Audit" },
-    { date: "2025-12-25", title: "Tax Deadline" },
-    { date: "2025-12-26", title: "Follow up" },
-  ];
-
+  const allAppointments = all_appointments.map((d) => ({
+    vendor_name: d.vendor_name, // Ensure this matches your API key (likely 'vendor_name')
+    invoice_date: d.invoice_date           // Ensure this matches your API key (likely 'date' or 'invoice_date')
+  }));
   return (
         <div className="grid grid-cols-1 md:grid-cols-6 gap-6 p-6 w-full overflow-y-scroll h-full overflow-x-hidden">
           
@@ -163,19 +137,19 @@ export default function Dashboard({ isCollapsed }: { isCollapsed: boolean }) {
             />
           </div>
 
-          {/* Row 2: Calendar */}
-          <div className="col-span-2 bg-secondary rounded-xl p-4 border border-border shadow-sm flex flex-col items-center">
-            {/* Passed appointments correctly */}
-            <CalendarWidget appointments={appointments} />
-          </div>
+        {/* Row 2: Calendar */}
+        <div className="col-span-2 bg-secondary rounded-xl p-4 border border-border shadow-sm flex flex-col items-center">
+           {/* Passed appointments correctly */}
+          <CalendarWidget appointments={allAppointments} />
+        </div>
 
           {/* Row 3: Top Vendors Bar Chart */}
           <div className="col-span-3 bg-secondary rounded-xl p-4 border border-border shadow-sm">
-            <h2 className="mb-2 text-lg font-bold text-content2">Top Vendors</h2>
+            <h2 className="mb-2 text-lg font-bold text-content2">Top Products</h2>
             <Plot
               data={[{
-                x: vendorRevenues,
-                y: vendorNames,
+                x: productRevenues,
+                y: productNames,
                 type: "bar",
                 orientation: "h",
                 marker: { color: accentColor },

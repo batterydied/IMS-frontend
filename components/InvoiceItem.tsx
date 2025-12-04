@@ -1,6 +1,6 @@
 type InvoiceProps = {
   id: string;
-  description: string;
+  vendor_name: string;
   amount: number;
   date: string;
   isSelected: boolean;
@@ -8,7 +8,7 @@ type InvoiceProps = {
 };
 
 export default function InvoiceItem({ 
-  id, description, amount, date, isSelected, onToggle 
+  id, vendor_name: vendor_name, amount, date, isSelected, onToggle 
 }: InvoiceProps) {
   return (
     <div className="border p-4 bg-secondary rounded flex items-center justify-between text-content2 border-border">
@@ -23,7 +23,7 @@ export default function InvoiceItem({
         </div>
 
         <span className="flex-1 px-4 truncate">
-            {description}
+            {vendor_name}
         </span>
 
         <span className="font-bold w-24 text-left">

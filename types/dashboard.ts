@@ -1,4 +1,3 @@
-// types/dashboard.ts
 export interface MonthlySale {
   month: string;
   revenue: number;
@@ -10,6 +9,12 @@ export interface Vendor {
 export interface Product {
   description: string;
   quantity: number;
+  item_revenue: number;
+}
+
+export interface Appointment {
+  invoice_date: string;  
+  vendor_name: string; 
 }
 export interface InvoiceData {
   total_revenue: number;
@@ -19,4 +24,5 @@ export interface InvoiceData {
   top_products_qty: Product[];
   product_sales: Product[];
   all_vendors: Vendor[];
+  all_appointments: Appointment[];
 }

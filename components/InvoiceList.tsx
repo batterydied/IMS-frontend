@@ -55,39 +55,52 @@ export default function InvoiceList() {
     );
   };
 
-  const handleExport = () => {
-    const selectedInvoices = invoices.filter((inv) =>
-      selectedIds.includes(inv.id)
-    );
+  //TODO actual logic neets to do an api call to download all the data
+const handleExport = async () => {
+    if (selectedIds.length === 0) return;
 
-    if (selectedInvoices.length === 0) return;
+    try {
+      // 1. Change to POST request
+      const res = await fetch("http://127.0.0.1:5000/api/invoices-by-id", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        // 2. Send the IDs in the body
+        body: JSON.stringify({ 
+          ids: selectedIds 
+        }),
+      });
+      
+      if (!res.ok) throw new Error("Failed to export");
+      
+      const fullData = await res.json();
+      
+      if (fullData.length === 0) return;
 
-    const headers = ["ID", "Vendor", "Date", "Total"];
+      // ... (The rest of the CSV generation logic remains exactly the same) ...
+      const headers = Object.keys(fullData[0]);
+      const rows = fullData.map((obj: any) => 
+        headers.map(header => {
+          const val = obj[header] === null || obj[header] === undefined ? "" : obj[header];
+          return `"${String(val).replace(/"/g, '""')}"`; 
+        }).join(",")
+      );
 
-    const rows = selectedInvoices.map((inv) =>
-      [
-        `"${inv.id}"`,
-        `"${inv.vendor_name || ""}"`,
-        `"${inv.invoice_date || ""}"`,
-        `"${inv.total_amount ?? 0}"`,
-      ].join(",")
-    );
+      const csvContent = [headers.join(","), ...rows].join("\n");
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `full_export.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
 
-    const csvContent = [headers.join(","), ...rows].join("\n");
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.setAttribute("download", "selected_invoices.csv");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    } catch (error) {
+      console.error("Export failed:", error);
+    }
   };
-
-  if (loading) {
-    return <p className="text-content2 p-4">Loading invoices...</p>;
-  }
-
   return (
     <div className="flex flex-col gap-6 w-full h-full overflow-auto">
       <div className="flex gap-4">
@@ -109,7 +122,7 @@ export default function InvoiceList() {
                 : "btn cursor-not-allowed text-content bg-muted"
             }`}
         >
-          Export CSV ({selectedIds.length})
+          Export CSV <span className="font-mono">({selectedIds.length})</span>
         </button>
       </div>
 
@@ -119,7 +132,7 @@ export default function InvoiceList() {
             <InvoiceItem
               key={invoice.id}
               id={invoice.id}
-              description={invoice.vendor_name || ""}
+              vendor_name={invoice.vendor_name || ""}
               amount={invoice.total_amount ?? 0}
               date={invoice.invoice_date || ""}
               isSelected={selectedIds.includes(invoice.id)}

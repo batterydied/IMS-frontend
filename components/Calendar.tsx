@@ -16,10 +16,8 @@ import {
 } from "date-fns";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-interface Appointment {
-  date: string;  
-  title?: string; 
-}
+import { Appointment } from "@/types/dashboard";
+
 interface CalendarWidgetProps {
   appointments?: Appointment[];
 }
@@ -32,7 +30,7 @@ const CalendarWidget = ({ appointments = [] }: CalendarWidgetProps) => {
 
     const getAppointments = (day: Date) => {
         return appointments.filter((appt) => 
-        isSameDay(parseISO(appt.date), day)
+        isSameDay(parseISO(appt.invoice_date), day)
         );
     };
 
@@ -128,7 +126,7 @@ const CalendarWidget = ({ appointments = [] }: CalendarWidgetProps) => {
                 <div className="bg-accent text-content text-xs rounded py-1 px-1 shadow-xl border border-border">
                   {dayAppointments.map((appt, idx) => (
                     <div key={idx} className="whitespace-nowrap p-1 font-bold">
-                      {appt.title}
+                      {appt.vendor_name}
                     </div>
                   ))}
                 </div>

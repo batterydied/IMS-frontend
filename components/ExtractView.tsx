@@ -59,6 +59,50 @@ export const ExtractView = () => {
         setOpenModal(false)
     }
 
+    const handleConfirm = async () => {
+        const storageKey = process.env.NEXT_PUBLIC_SUPABASE_REF; 
+        if (!storageKey) {
+            console.error("Storage key not found in environment variables");
+            return;
+        }
+        const sessionString = localStorage.getItem(storageKey);
+        let userId = null;
+
+        if (sessionString) {
+            try {
+            const sessionData = JSON.parse(sessionString);
+            // Accessing user.id based on the JSON you sent me
+            userId = sessionData.user?.id; 
+            } catch (e) {
+            console.error("Error parsing local storage data:", e);
+            }
+        }
+
+        const mappedItems = invoiceItems.map((item) => ({
+            description: item.description,
+            quantity: item.quantity, 
+            price: item.price
+        }));
+        const dataToSend = {
+            invoice_number: invoiceNumber, 
+            vendor_name: vendor,
+            invoice_date: invoiceDate,
+            total_amount: total,
+            items: mappedItems,
+        }
+        const response = await fetch('http://127.0.0.1:5000/api/confirm-invoice', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({user_id: userId, invoice:dataToSend}),
+        });
+
+        const result = await response.json();
+        console.log('Confirmation successful:', result);
+        
+
+    };
     const renderItems = () => {
         return invoiceItems.map(item => (
             <li onClick={() => {
@@ -118,7 +162,7 @@ export const ExtractView = () => {
                     <input onChange={(e) => setTotal(e.target.value)} value={total} placeholder="Total" className="input w-full border-content border-2 bg-primary text-content2" type="text"></input>
                 </div>
                 <div className="flex-1 flex justify-end items-end p-4">
-                    <button className={`btn rounded-md border-0 ${!validateInvoice() ? "cursor-not-allowed bg-muted": "border-0 hover:bg-accent"}`}>Push to Dashboard</button>
+                    <button onClick={handleConfirm} className={`btn rounded-md border-0 ${!validateInvoice() ? "cursor-not-allowed bg-muted": "border-0 hover:bg-accent"}`}>Push to Dashboard</button>
                 </div>
             </div>
             <div className="h-full w-[45%] border-content2/30 border-2 border-dotted rounded-md">
