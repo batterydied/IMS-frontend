@@ -44,7 +44,6 @@ const InvoiceUploader = ({setTotal, invoiceImg, setInvoiceImg, setInvoiceNumber,
             return date
         }
 
-
         const handleUpload = ()=>{
             if(inputRef.current){
                 inputRef.current.click()
