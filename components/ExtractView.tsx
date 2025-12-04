@@ -84,7 +84,7 @@ export const ExtractView = () => {
                     <span>Invoice Date</span>
                     <input onChange={(e) => setInvoiceDate(e.target.value)} value={invoiceDate} className="input w-full border-content border-2 bg-primary text-content2" type="date"></input>
                 </div>
-                <div className="flex flex-col p-4 max-h-[300px] overflow-y-auto">
+                <div className="flex flex-col p-4 max-h-[250px] overflow-y-auto">
                     <div className="w-full flex justify-between items-center p-1">
                         <span>Items</span>
                         <PlusSVG className="hover:text-accent hover:cursor-pointer" onClick={()=>setOpenModal(true)}/>
@@ -100,6 +100,10 @@ export const ExtractView = () => {
                         </li>
                         {renderItems()}
                     </ul>
+                </div>
+                <div className="flex flex-col px-4 py-2">
+                    <span>Total</span>
+                    <input onChange={(e) => setVendor(e.target.value)} value={vendor} placeholder="Total" className="input w-full border-content border-2 bg-primary text-content2" type="text"></input>
                 </div>
                 <div className="flex-1 flex justify-end items-end p-4">
                     <button className={`btn rounded-md border-0 ${!validateInvoice() ? "cursor-not-allowed bg-muted": "border-0 hover:bg-accent"}`}>Push to Dashboard</button>
