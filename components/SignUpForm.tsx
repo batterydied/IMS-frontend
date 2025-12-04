@@ -44,7 +44,7 @@ export default function SignUpForm(){
     }   
 
     return (
-        <form onSubmit={handleSignUp} className="flex flex-col w-[80%] space-y-4 p-2">
+        <form onSubmit={handleSignUp} className="flex text-content flex-col w-[80%] space-y-4 p-2">
             <input name="email" placeholder="Email" className="input input-no-focus w-full border-0 bg-gray-800" value={email} onChange={(e)=>{
                 setEmail(e.currentTarget.value)
             }}/>

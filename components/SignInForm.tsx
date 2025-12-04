@@ -55,12 +55,12 @@ export default function SignInForm(){
 
     return (
         <div className="flex flex-col w-[80%] space-y-2 p-2">
-            <form className="space-y-4" onSubmit={handleSignIn}>
+            <form className="space-y-4 text-content" onSubmit={handleSignIn}>
                 <input name="email" placeholder="Email" className="input input-no-focus w-full bg-gray-800 border-0" value={email} onChange={(e)=>{
                     setEmail(e.currentTarget.value)
                 }}/>
                 <div>
-                    <label className="input input-no-focus w-full rounded-sm bg-gray-800 border-0">
+                    <label className="input  input-no-focus w-full rounded-sm bg-gray-800 border-0">
                         <input name="password" placeholder="Password" value={password} type={isPasswordHidden ? "password" : "text"} onChange={(e)=>{
                             setPassword(e.currentTarget.value)
                         }}/>
