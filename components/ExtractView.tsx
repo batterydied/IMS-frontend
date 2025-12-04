@@ -122,7 +122,7 @@ export const ExtractView = () => {
                 </div>
             </div>
             <div className="h-full w-[45%] border-content2/30 border-2 border-dotted rounded-md">
-                <InvoiceUploader invoiceImg={invoiceImg} setInvoiceImg={setInvoiceImg} setInvoiceNumber={setInvoiceNumber} setVendor={setVendor} setInvoiceDate={setInvoiceDate} setInvoiceItems={setInvoiceItems}/>
+                <InvoiceUploader setTotal={setTotal} invoiceImg={invoiceImg} setInvoiceImg={setInvoiceImg} setInvoiceNumber={setInvoiceNumber} setVendor={setVendor} setInvoiceDate={setInvoiceDate} setInvoiceItems={setInvoiceItems}/>
             </div>
             {openModal && 
             <ItemModal setShouldOpen={setOpenModal} addItem={handleAddItem} />

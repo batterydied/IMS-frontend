@@ -19,10 +19,18 @@ interface InvoiceUploader {
     setInvoiceDate: (data: string) => void;
     setInvoiceItems: (data: InvoiceItem[]) => void;
     invoiceImg: string;
-    setInvoiceImg: (data: string) => void
+    setInvoiceImg: (data: string) => void;
+    setTotal: (data: string) => void;
 }
 
-const InvoiceUploader = ({invoiceImg, setInvoiceImg, setInvoiceNumber, setVendor, setInvoiceDate, setInvoiceItems}: InvoiceUploader) => {
+interface RawInvoice {
+    description: string; 
+    quantity: string; 
+    unit_price: string; 
+    line_total: string;
+}
+
+const InvoiceUploader = ({setTotal, invoiceImg, setInvoiceImg, setInvoiceNumber, setVendor, setInvoiceDate, setInvoiceItems}: InvoiceUploader) => {
     const inputRef = useRef<HTMLInputElement>(null)
         const [isUploading, setIsUploading] = useState(false)
         const [isDragging, setIsDragging] = useState(false)
@@ -99,8 +107,9 @@ const InvoiceUploader = ({invoiceImg, setInvoiceImg, setInvoiceNumber, setVendor
                         setInvoiceItems([])
                         setInvoiceNumber(data.invoice_number)
                         setVendor(data.vendor_name)
+                        setTotal(data.total_amount)
 
-                        setInvoiceItems(data.items.map(item => {
+                        setInvoiceItems(data.items.map((item: RawInvoice) => {
                             return {
                                 description: item.description,
                                 itemId: uuid(),
