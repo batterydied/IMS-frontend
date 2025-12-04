@@ -126,10 +126,10 @@ const handleExport = async () => {
           className={`px-4 py-2 rounded transition
             ${selectedIds.length > 0 
               ? "btn bg-accent hover:bg-accent/90 border-0" 
-              : "btn cursor-not-allowed text-content bg-muted"
+              : "btn cursor-not-allowed text-content bg-muted border-0"
             }`}
         >
-          Export CSV ({selectedIds.length})
+          Export CSV <span className="font-mono">({selectedIds.length})</span>
         </button>
       </div>
 
