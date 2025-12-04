@@ -32,8 +32,8 @@ body {
 
 .glass {
   background-color: transparent;
-  -webkit-backdrop-filter: blur(20px);
-  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
   background-image: linear-gradient(
     120deg,
     rgba(255, 255, 255, 0.3),

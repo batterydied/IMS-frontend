@@ -3,7 +3,8 @@ import { memo, useRef, useState } from "react"
 import { UploadSVG } from "./SVG"
 import { createClient } from "@supabase/supabase-js"
 import Image from "next/image"
-import { InvoiceItem } from "./ExtractView";
+import { InvoiceItem } from "./ExtractView"
+import { v4 as uuid } from "uuid"
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -17,14 +18,23 @@ interface InvoiceUploader {
     setVendor: (data: string) => void;
     setInvoiceDate: (data: string) => void;
     setInvoiceItems: (data: InvoiceItem[]) => void;
+    invoiceImg: string;
+    setInvoiceImg: (data: string) => void;
+    setTotal: (data: string) => void;
 }
 
-const InvoiceUploader = ({setInvoiceNumber, setVendor, setInvoiceDate, setInvoiceItems}: InvoiceUploader) => {
+interface RawInvoice {
+    description: string; 
+    quantity: string; 
+    unit_price: string; 
+    line_total: string;
+}
+
+const InvoiceUploader = ({setTotal, invoiceImg, setInvoiceImg, setInvoiceNumber, setVendor, setInvoiceDate, setInvoiceItems}: InvoiceUploader) => {
     const inputRef = useRef<HTMLInputElement>(null)
         const [isUploading, setIsUploading] = useState(false)
         const [isDragging, setIsDragging] = useState(false)
         const [hasServerError, setHasServerError] = useState(false)
-        const [invoiceImg, setInvoiceImg] = useState<string>("")
     
         const getInvoiceDate = (date: string | null): string => {
             if (!date) {
@@ -33,7 +43,6 @@ const InvoiceUploader = ({setInvoiceNumber, setVendor, setInvoiceDate, setInvoic
             }
             return date
         }
-
 
         const handleUpload = ()=>{
             if(inputRef.current){
@@ -76,7 +85,6 @@ const InvoiceUploader = ({setInvoiceNumber, setVendor, setInvoiceDate, setInvoic
     
                 console.log("Supabase Upload Successful:", uploadData.path)
     
-                // --- STEP 2: Notify Python Backend (Send JSON) ---
                 const response = await fetch("http://localhost:5000/api/process-invoice", {
                     method: "POST",
                     headers: {
@@ -97,6 +105,17 @@ const InvoiceUploader = ({setInvoiceNumber, setVendor, setInvoiceDate, setInvoic
                         setInvoiceItems([])
                         setInvoiceNumber(data.invoice_number)
                         setVendor(data.vendor_name)
+                        setTotal(data.total_amount)
+
+                        setInvoiceItems(data.items.map((item: RawInvoice) => {
+                            return {
+                                description: item.description,
+                                itemId: uuid(),
+                                quantity: item.quantity,
+                                price: item.unit_price,
+                                total: item.line_total
+                            }
+                        }))
                     }
                     
                     setHasServerError(false)

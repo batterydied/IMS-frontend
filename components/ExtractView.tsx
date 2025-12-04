@@ -1,12 +1,15 @@
 import { useState } from "react";
 import InvoiceUploader from "./InvoiceUploader";
 import { PlusSVG } from "./SVG";
+import ItemModal from "./ItemModal";
+import UpdateItemModal from "./UpdateItemModal";
 
 export interface InvoiceItem {
-  description: string;
-  quantity: string;
-  price: string;
-  total: string;
+    itemId: string;
+    description: string;
+    quantity: string;
+    price: string;
+    total: string;
 }
 
 export interface InvoiceData {
@@ -14,6 +17,7 @@ export interface InvoiceData {
   vendor: string;
   invoiceDate: string;
   items: InvoiceItem[];
+  total: string;
 }
 
 export const ExtractView = () => {
@@ -21,9 +25,101 @@ export const ExtractView = () => {
     const [vendor, setVendor] = useState("")
     const [invoiceDate, setInvoiceDate] = useState("")
     const [invoiceItems, setInvoiceItems] = useState<InvoiceItem[]>([])
+    const [invoiceImg, setInvoiceImg] = useState("")
+    const [total, setTotal] = useState("")
+    const [openModal, setOpenModal] = useState(false)
+    const [selectedItem, setSelectedItem] = useState<InvoiceItem | null>(null)
+
+    const handleUpdateItem = (item: InvoiceItem) => {
+        setInvoiceItems(prev => prev.map(i => i.itemId == item.itemId ? item : i))
+        setSelectedItem(null)
+    }
+
+    const handleDeleteItem = (itemId: string) => {
+        setInvoiceItems(prev => prev.filter(i => i.itemId != itemId))
+        setSelectedItem(null)
+    }
 
     const validateInvoice = () => {
-        return invoiceNumber && vendor && invoiceDate && invoiceItems.length != 0
+    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+    const moneyRegex = /^\d+(\.\d{1,2})?$/;
+
+    return (
+        !!invoiceNumber &&
+        !!vendor &&
+        !!invoiceImg &&
+        invoiceItems.length > 0 &&
+        dateRegex.test(invoiceDate) &&
+        moneyRegex.test(total) &&
+        Number(total) > 0
+    )};
+
+    const handleAddItem = (item: InvoiceItem) => {
+        setInvoiceItems(prev => [...prev, item])
+        setOpenModal(false)
+    }
+
+    const handleConfirm = async () => {
+        const storageKey = process.env.NEXT_PUBLIC_SUPABASE_REF; 
+        if (!storageKey) {
+            console.error("Storage key not found in environment variables");
+            return;
+        }
+        const sessionString = localStorage.getItem(storageKey);
+        let userId = null;
+
+        if (sessionString) {
+            try {
+            const sessionData = JSON.parse(sessionString);
+            // Accessing user.id based on the JSON you sent me
+            userId = sessionData.user?.id; 
+            } catch (e) {
+            console.error("Error parsing local storage data:", e);
+            }
+        }
+
+        const mappedItems = invoiceItems.map((item) => ({
+            description: item.description,
+            quantity: item.quantity, 
+            price: item.price
+        }));
+        const dataToSend = {
+            invoice_number: invoiceNumber, 
+            vendor_name: vendor,
+            invoice_date: invoiceDate,
+            total_amount: total,
+            items: mappedItems,
+        }
+        const response = await fetch('http://127.0.0.1:5000/api/confirm-invoice', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({user_id: userId, invoice:dataToSend}),
+        });
+
+        const result = await response.json();
+        console.log('Confirmation successful:', result);
+        
+
+    };
+    const renderItems = () => {
+        return invoiceItems.map(item => (
+            <li onClick={() => {
+                if(selectedItem?.itemId !== item.itemId){
+                    setSelectedItem(item)
+                }else{
+                    setSelectedItem(null)
+                }
+            }} key={item.itemId} className="hover:cursor-pointer hover:bg-muted border-2 border-t-0 border-content py-1 px-3">
+                <div className="grid grid-cols-[2fr_1fr_1fr_1fr]">
+                    <span>{item.description}</span>
+                    <span>{item.quantity}</span>
+                    <span>{item.price}</span>
+                    <span>{item.total}</span>
+                </div>
+            </li>
+        ))
     }
 
     return (
@@ -44,10 +140,10 @@ export const ExtractView = () => {
                     <span>Invoice Date</span>
                     <input onChange={(e) => setInvoiceDate(e.target.value)} value={invoiceDate} className="input w-full border-content border-2 bg-primary text-content2" type="date"></input>
                 </div>
-                <div className="flex flex-col p-4 max-h-[300px] overflow-y-auto">
+                <div className="flex flex-col p-4 max-h-[250px] overflow-y-auto">
                     <div className="w-full flex justify-between items-center p-1">
                         <span>Items</span>
-                        <PlusSVG className="hover:text-accent hover:cursor-pointer"/>
+                        <PlusSVG className="hover:text-accent hover:cursor-pointer" onClick={()=>setOpenModal(true)}/>
                     </div>
                     <ul className="w-full">
                         <li className="rounded-t-md border-2 border-content py-1 px-3">
@@ -58,15 +154,26 @@ export const ExtractView = () => {
                                 <span>Total</span>
                             </div>
                         </li>
+                        {renderItems()}
                     </ul>
                 </div>
+                <div className="flex flex-col px-4 py-2">
+                    <span>Total</span>
+                    <input onChange={(e) => setTotal(e.target.value)} value={total} placeholder="Total" className="input w-full border-content border-2 bg-primary text-content2" type="text"></input>
+                </div>
                 <div className="flex-1 flex justify-end items-end p-4">
-                    <button className={`btn rounded-md border-0 ${!validateInvoice() ? "cursor-not-allowed bg-muted": "border-0 hover:bg-accent"}`}>Push to Dashboard</button>
+                    <button onClick={handleConfirm} className={`btn rounded-md border-0 ${!validateInvoice() ? "cursor-not-allowed bg-muted": "border-0 hover:bg-accent"}`}>Push to Dashboard</button>
                 </div>
             </div>
             <div className="h-full w-[45%] border-content2/30 border-2 border-dotted rounded-md">
-                <InvoiceUploader setInvoiceNumber={setInvoiceNumber} setVendor={setVendor} setInvoiceDate={setInvoiceDate} setInvoiceItems={setInvoiceItems}/>
+                <InvoiceUploader setTotal={setTotal} invoiceImg={invoiceImg} setInvoiceImg={setInvoiceImg} setInvoiceNumber={setInvoiceNumber} setVendor={setVendor} setInvoiceDate={setInvoiceDate} setInvoiceItems={setInvoiceItems}/>
             </div>
+            {openModal && 
+            <ItemModal setShouldOpen={setOpenModal} addItem={handleAddItem} />
+            }
+            {selectedItem &&
+            <UpdateItemModal selectedItem={selectedItem} setSelectedItem={setSelectedItem} updateItem={handleUpdateItem} deleteItem={handleDeleteItem} />
+            }
         </div>
     )
 }

@@ -75,10 +75,10 @@ export default function SignInForm(){
                 or
                 <div className='w-[47%] h-0.5 bg-muted'/>
             </div>
-            <button onClick={handleGoogleSignIn} className="hover:cursor-pointer text-content p-2 rounded-md flex justify-center">
+            <button onClick={handleGoogleSignIn} className="group hover:cursor-pointer text-content p-2 rounded-md flex justify-center">
                 <div className="flex flex-row space-x-3 hover:bg-gray-800 p-2 rounded-sm">
                     <Image src="/google.svg" alt="Google Icon" width={20} height={20}/>
-                    <div>Continue with Google</div>
+                    <div className="text-content2 group-hover:text-content">Continue with Google</div>
                 </div>
             </button>
         </div>

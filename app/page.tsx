@@ -6,11 +6,12 @@ import { Sidebar } from "@/components/Sidebar"
 import Dashboard from "@/components/Dashboard"
 import InvoiceList from "@/components/InvoiceList"
 import { ExtractView } from "@/components/ExtractView"
+import React from "react"
 
 export type ViewMode = "dashboard" | "search" | "extract";
 
 const VIEWS = {
-  dashboard: <Dashboard />,
+  dashboard: <Dashboard isCollapsed={true} />,
   search: <InvoiceList />,
   extract: <ExtractView />,
 } as const;
@@ -50,7 +51,7 @@ export default function App() {
     <div className="flex flex-row h-screen bg-primary">
       <Sidebar handleSignOut={handleSignOut} handleToggle={handleToggleCollapsed} isCollapsed={isCollapsed} handleSelectView={handleSelectView}/>
       <div className="bg-primary flex-1 p-2">
-        {VIEWS[viewMode]}
+        {React.cloneElement(VIEWS[viewMode], { isCollapsed })}
       </div>
     </div>
   )
