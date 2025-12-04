@@ -17,6 +17,7 @@ export interface InvoiceData {
   vendor: string;
   invoiceDate: string;
   items: InvoiceItem[];
+  total: string;
 }
 
 export const ExtractView = () => {
@@ -25,6 +26,7 @@ export const ExtractView = () => {
     const [invoiceDate, setInvoiceDate] = useState("")
     const [invoiceItems, setInvoiceItems] = useState<InvoiceItem[]>([])
     const [invoiceImg, setInvoiceImg] = useState("")
+    const [total, setTotal] = useState("")
     const [openModal, setOpenModal] = useState(false)
     const [selectedItem, setSelectedItem] = useState<InvoiceItem | null>(null)
 
@@ -39,8 +41,18 @@ export const ExtractView = () => {
     }
 
     const validateInvoice = () => {
-        return invoiceNumber && vendor && invoiceDate && invoiceItems.length != 0 && invoiceImg
-    }
+    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+    const moneyRegex = /^\d+(\.\d{1,2})?$/;
+
+    return (
+        !!invoiceNumber &&
+        !!vendor &&
+        !!invoiceImg &&
+        invoiceItems.length > 0 &&
+        dateRegex.test(invoiceDate) &&
+        moneyRegex.test(total) &&
+        Number(total) > 0
+    )};
 
     const handleAddItem = (item: InvoiceItem) => {
         setInvoiceItems(prev => [...prev, item])
@@ -103,7 +115,7 @@ export const ExtractView = () => {
                 </div>
                 <div className="flex flex-col px-4 py-2">
                     <span>Total</span>
-                    <input onChange={(e) => setVendor(e.target.value)} value={vendor} placeholder="Total" className="input w-full border-content border-2 bg-primary text-content2" type="text"></input>
+                    <input onChange={(e) => setTotal(e.target.value)} value={total} placeholder="Total" className="input w-full border-content border-2 bg-primary text-content2" type="text"></input>
                 </div>
                 <div className="flex-1 flex justify-end items-end p-4">
                     <button className={`btn rounded-md border-0 ${!validateInvoice() ? "cursor-not-allowed bg-muted": "border-0 hover:bg-accent"}`}>Push to Dashboard</button>
