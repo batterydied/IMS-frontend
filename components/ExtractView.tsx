@@ -65,7 +65,7 @@ export const ExtractView = () => {
                 </div>
             </div>
             <div className="h-full w-[45%] border-content2/30 border-2 border-dotted rounded-md">
-                <InvoiceUploader />
+                <InvoiceUploader setInvoiceNumber={setInvoiceNumber} setVendor={setVendor} setInvoiceDate={setInvoiceDate} setInvoiceItems={setInvoiceItems}/>
             </div>
         </div>
     )

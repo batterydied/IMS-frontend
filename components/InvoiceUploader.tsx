@@ -1,8 +1,9 @@
 "use client";
-import { useRef, useState } from "react"
+import { memo, useRef, useState } from "react"
 import { UploadSVG } from "./SVG"
 import { createClient } from "@supabase/supabase-js"
 import Image from "next/image"
+import { InvoiceItem } from "./ExtractView";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -11,13 +12,29 @@ const supabase = createClient(
 
 const session_key = "sb-"+ process.env.NEXT_PUBLIC_SUPABASE_REF +"-auth-token"
 
-const InvoiceUploader = () => {
+interface InvoiceUploader {
+    setInvoiceNumber: (data: string) => void;
+    setVendor: (data: string) => void;
+    setInvoiceDate: (data: string) => void;
+    setInvoiceItems: (data: InvoiceItem[]) => void;
+}
+
+const InvoiceUploader = ({setInvoiceNumber, setVendor, setInvoiceDate, setInvoiceItems}: InvoiceUploader) => {
     const inputRef = useRef<HTMLInputElement>(null)
         const [isUploading, setIsUploading] = useState(false)
         const [isDragging, setIsDragging] = useState(false)
         const [hasServerError, setHasServerError] = useState(false)
         const [invoiceImg, setInvoiceImg] = useState<string>("")
     
+        const getInvoiceDate = (date: string | null): string => {
+            if (!date) {
+                const today = new Date()
+                return today.toISOString().split("T")[0] // YYYY-MM-DD
+            }
+            return date
+        }
+
+
         const handleUpload = ()=>{
             if(inputRef.current){
                 inputRef.current.click()
@@ -73,6 +90,15 @@ const InvoiceUploader = () => {
     
                     const result = await response.json()
                     console.log("VLM Processing Result:", result)
+
+                    if(result.status === "success"){
+                        const data = result.data
+                        setInvoiceDate(getInvoiceDate(data.invoice_date))
+                        setInvoiceItems([])
+                        setInvoiceNumber(data.invoice_number)
+                        setVendor(data.vendor_name)
+                    }
+                    
                     setHasServerError(false)
                 } catch (error) {
                     console.error("Error in upload flow:", error)
@@ -118,7 +144,7 @@ const InvoiceUploader = () => {
             onDrop={handleDrop}
             >
                 {isUploading && (
-                    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-[9999]">
+                    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-[9999] w-full h-full">
                         <div className="text-content text-xl font-semibold animate-pulse">
                             Uploading...
                         </div>
@@ -132,9 +158,9 @@ const InvoiceUploader = () => {
                 <input ref={inputRef} type="file" className="hidden" onChange={handleFileChangeEvent}/>
                 <button className="btn rounded-md hover:bg-accent border-0" onClick={handleUpload}>Upload</button>
                 {hasServerError && <span className="text-red-500">Unable to connect to server, try again</span>}
-                {invoiceImg && <Image src={invoiceImg} alt="Invoice Preview" width={200} height={200} />}
+                {invoiceImg && <Image src={invoiceImg} alt="Invoice Preview" width={200} height={200} className="p-4"/>}
             </div>
         )
 }
 
-export default InvoiceUploader
+export default memo(InvoiceUploader)

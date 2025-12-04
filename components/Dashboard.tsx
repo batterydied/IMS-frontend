@@ -111,7 +111,7 @@ export default function Dashboard() {
   ];
 
   return (
-        <div className="grid grid-cols-1 md:grid-cols-6 gap-6 p-6 w-full overflow-y-scroll h-full">
+        <div className="grid grid-cols-1 md:grid-cols-6 gap-6 p-6 w-full overflow-y-scroll h-full overflow-x-hidden">
           
           {/* Cards */}
           <div className="md:col-span-2 bg-secondary rounded-xl p-4 border border-border shadow-sm">
