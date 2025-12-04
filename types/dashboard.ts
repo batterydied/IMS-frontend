@@ -9,6 +9,7 @@ export interface Vendor {
 export interface Product {
   description: string;
   quantity: number;
+  item_revenue: number;
 }
 
 export interface Appointment {

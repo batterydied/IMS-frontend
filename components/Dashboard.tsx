@@ -65,15 +65,15 @@ export default function Dashboard() {
     total_revenue,
     unique_vendors,
     monthly_sales = [],
-    top_vendors = [],
+    top_products_qty = [],
     all_vendors = [],
     all_appointments = [],
   } = data;
   const months = monthly_sales.map((d) => d.month);
   const monthRevenues = monthly_sales.map((d) => d.revenue ?? 0);
 
-  const vendorNames = top_vendors.map((d) => d.vendor_name);
-  const vendorRevenues = top_vendors.map((d) => d.revenue ?? 0);
+  const productNames = top_products_qty.map((d) => d.description);
+  const productRevenues = top_products_qty.map((d) => d.item_revenue ?? 0);
 
   const allVendorNames = all_vendors.map((d) => d.vendor_name);
   const allVendorRevenue = all_vendors.map((d) => d.revenue ?? 0);
@@ -145,11 +145,11 @@ export default function Dashboard() {
 
           {/* Row 3: Top Vendors Bar Chart */}
           <div className="col-span-3 bg-secondary rounded-xl p-4 border border-border shadow-sm">
-            <h2 className="mb-2 text-lg font-bold text-content2">Top Vendors</h2>
+            <h2 className="mb-2 text-lg font-bold text-content2">Top Products</h2>
             <Plot
               data={[{
-                x: vendorRevenues,
-                y: vendorNames,
+                x: productRevenues,
+                y: productNames,
                 type: "bar",
                 orientation: "h",
                 marker: { color: accentColor },
