@@ -1,7 +1,7 @@
 "use client"
 import { useSupabase } from "@/contexts/SupabaseProvider"
 import { useRouter } from "next/navigation"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { Sidebar } from "@/components/Sidebar"
 import Dashboard from "@/components/Dashboard"
 import InvoiceList from "@/components/InvoiceList"
@@ -19,7 +19,6 @@ export default function App() {
   const router = useRouter()
   const { user, supabase, isLoading } = useSupabase()
   const [isCollapsed, setIsCollapsed] = useState(true)
-  const [query, setQuery] = useState("")
   const [viewMode, setViewMode] = useState<ViewMode>("dashboard");
 
   const handleSelectView = (view: ViewMode) => {
@@ -35,18 +34,6 @@ export default function App() {
     setIsCollapsed(prev => !prev)
   }, [])
 
-  const handleSetQuery = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(e.target.value)
-  }, [])
-
-  const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      if(query != ""){
-        setViewMode("search")
-      }
-    }
-  }, [query])
-
   useEffect(() => {
     if (!isLoading && !user) {
       router.replace("/auth/signin")
@@ -61,7 +48,7 @@ export default function App() {
 
   return (
     <div className="flex flex-row h-screen bg-primary">
-      <Sidebar handleSignOut={handleSignOut} handleToggle={handleToggleCollapsed} isCollapsed={isCollapsed} handleSetQuery={handleSetQuery} query={query} handleKeyDown={handleKeyDown} handleSelectView={handleSelectView}/>
+      <Sidebar handleSignOut={handleSignOut} handleToggle={handleToggleCollapsed} isCollapsed={isCollapsed} handleSelectView={handleSelectView}/>
       <div className="bg-primary flex-1 p-2">
         {VIEWS[viewMode]}
       </div>
