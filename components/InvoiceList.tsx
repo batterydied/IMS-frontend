@@ -5,7 +5,7 @@ import InvoiceItem from "./InvoiceItem";
 
 type Invoice = {
   id: string;
-  description: string;
+  vendor_name: string;
   invoice_date: string;
   total_amount: number;
 };
@@ -49,7 +49,7 @@ export default function InvoiceList() {
   const filteredInvoices = invoices.filter((invoice) => {
     const term = searchTerm.toLowerCase();
     return (
-      invoice.description.toLowerCase().includes(term) ||
+      invoice.vendor_name.toLowerCase().includes(term) ||
       invoice.id.toString().includes(term)
     );
   });
@@ -64,32 +64,51 @@ export default function InvoiceList() {
   };
 
   //TODO actual logic neets to do an api call to download all the data
-  const handleExport = () => {
-    const selectedInvoices = invoices.filter((inv: Invoice) => selectedIds.includes(inv.id));
-    
-    if (selectedInvoices.length === 0) return;
+const handleExport = async () => {
+    if (selectedIds.length === 0) return;
 
-    const headers = ["ID", "Description", "Date", "Price"];
+    try {
+      // 1. Change to POST request
+      const res = await fetch("http://127.0.0.1:5000/api/invoices-by-id", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        // 2. Send the IDs in the body
+        body: JSON.stringify({ 
+          ids: selectedIds 
+        }),
+      });
+      
+      if (!res.ok) throw new Error("Failed to export");
+      
+      const fullData = await res.json();
+      
+      if (fullData.length === 0) return;
 
-    const rows = selectedInvoices.map(inv => [
-      `"${inv.id}"`, 
-      `"${inv.description}"`, 
-      `"${inv.invoice_date}"`, 
-      `"${inv.total_amount}"`
-    ].join(","));
+      // ... (The rest of the CSV generation logic remains exactly the same) ...
+      const headers = Object.keys(fullData[0]);
+      const rows = fullData.map((obj: any) => 
+        headers.map(header => {
+          const val = obj[header] === null || obj[header] === undefined ? "" : obj[header];
+          return `"${String(val).replace(/"/g, '""')}"`; 
+        }).join(",")
+      );
 
-    const csvContent = [headers.join(","), ...rows].join("\n");
+      const csvContent = [headers.join(","), ...rows].join("\n");
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `full_export.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
 
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute("download", "selected_invoices.csv");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    } catch (error) {
+      console.error("Export failed:", error);
+    }
   };
-
   return (
     <div className="flex flex-col gap-6 w-full h-full overflow-scroll">
       <div className="flex gap-4 ">
@@ -120,7 +139,7 @@ export default function InvoiceList() {
             <InvoiceItem
               key={invoice.id}
               id={invoice.id}
-              description={invoice.description}
+              vendor_name={invoice.vendor_name}
               amount={invoice.total_amount}
               date={invoice.invoice_date}
               // Pass selection props down
