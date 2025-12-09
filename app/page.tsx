@@ -2,10 +2,10 @@
 import { useSupabase } from "@/contexts/SupabaseProvider"
 import { useRouter } from "next/navigation"
 import { useCallback, useEffect, useState } from "react"
-import { Sidebar } from "@/components/Sidebar"
-import Dashboard from "@/components/Dashboard"
-import InvoiceList from "@/components/InvoiceList"
-import { ExtractView } from "@/components/ExtractView"
+import { Sidebar } from "@/components/Sidebar/Sidebar"
+import Dashboard from "@/components/Dashboard/Dashboard"
+import InvoiceList from "@/components/InvoiceList/InvoiceList"
+import { ExtractView } from "@/components/ExtractView/ExtractView"
 import React from "react"
 
 export type ViewMode = "dashboard" | "search" | "extract";

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import InvoiceItem from "./InvoiceItem";
+import InvoiceItem from "../InvoiceItem/InvoiceItem";
 
 type Invoice = {
   id: string;
@@ -21,7 +21,6 @@ async function getInvoices() {
 
 export default function InvoiceList() {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
-  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
@@ -33,7 +32,6 @@ export default function InvoiceList() {
       } catch (error) {
         console.error("Error loading invoices:", error);
       } finally {
-        setLoading(false);
       }
     }
 

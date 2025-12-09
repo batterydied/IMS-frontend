@@ -1,8 +1,8 @@
 import { useState } from "react";
-import InvoiceUploader from "./InvoiceUploader";
-import { PlusSVG } from "./SVG";
-import ItemModal from "./ItemModal";
-import UpdateItemModal from "./UpdateItemModal";
+import InvoiceUploader from "../InvoiceUploader/InvoiceUploader";
+import { PlusSVG } from "../SVG";
+import ItemModal from "../ItemModal/ItemModal";
+import UpdateItemModal from "../UpdateItemModal/UpdateItemModal";
 
 export interface InvoiceItem {
     itemId: string;

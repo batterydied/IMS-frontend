@@ -1,5 +1,5 @@
 "use client"
-import SignInForm from "@/components/SignInForm"
+import SignInForm from "@/components/SignInForm/SignInForm"
 import { useSupabase } from "@/contexts/SupabaseProvider"
 import Image from "next/image"
 import Link from "next/link"

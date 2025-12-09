@@ -1,5 +1,5 @@
 "use client"
-import SignUpForm from "@/components/SignUpForm"
+import SignUpForm from "@/components/SignUpForm/SignUpForm"
 import { useSupabase } from "@/contexts/SupabaseProvider"
 import Image from "next/image"
 import Link from "next/link"
