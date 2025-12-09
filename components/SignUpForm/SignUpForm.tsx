@@ -2,7 +2,7 @@
 import { useSupabase } from "@/contexts/SupabaseProvider"
 import { useRouter } from "next/navigation"
 import { useCallback, useState } from "react"
-import { ViewOffSVG, ViewSVG } from "./SVG"
+import { ViewOffSVG, ViewSVG } from "../SVG"
 
 export default function SignUpForm(){
     const router = useRouter()
@@ -55,7 +55,7 @@ export default function SignUpForm(){
                     }}/>
                     {isPasswordHidden ? <ViewOffSVG className="text-muted hover:cursor-pointer" onClick={handleShowPassword}/> : <ViewSVG className="text-content hover:cursor-pointer" onClick={handleHidePassword}/>}
                 </label>
-                {errorMsg && <text className="text-sm text-red-400">{errorMsg}</text>}
+                {errorMsg && <span className="text-sm text-red-400">{errorMsg}</span>}
             </div>
             <button className="bg-accent p-2 rounded-md hover:bg-accent/80 active:bg-accent/70 text-content">Sign up</button>
         </form>

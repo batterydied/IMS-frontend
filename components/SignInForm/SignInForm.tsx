@@ -66,7 +66,7 @@ export default function SignInForm(){
                         }}/>
                         {isPasswordHidden ? <ViewOffSVG className="hover:cursor-pointer text-muted" onClick={handleShowPassword}/> : <ViewSVG className="hover:cursor-pointer" onClick={handleHidePassword}/>}
                     </label>
-                    {errorMsg && <text className="text-sm text-red-400">{errorMsg}</text>}
+                    {errorMsg && <span className="text-sm text-red-400">{errorMsg}</span>}
                 </div>
                 <button type="submit" className="bg-accent p-2 rounded-md hover:bg-accent/80 active:bg-accent/70 text-content w-full">Sign in</button>
             </form>

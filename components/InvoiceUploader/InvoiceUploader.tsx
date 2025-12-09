@@ -1,9 +1,9 @@
 "use client";
 import { memo, useRef, useState } from "react"
-import { UploadSVG } from "./SVG"
+import { UploadSVG } from "../SVG"
 import { createClient } from "@supabase/supabase-js"
 import Image from "next/image"
-import { InvoiceItem } from "./ExtractView"
+import { InvoiceItem } from "../ExtractView/ExtractView"
 import { v4 as uuid } from "uuid"
 
 const supabase = createClient(

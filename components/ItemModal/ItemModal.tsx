@@ -1,5 +1,5 @@
 import { memo, useState } from "react"
-import { InvoiceItem } from "./ExtractView"
+import { InvoiceItem } from "../ExtractView/ExtractView"
 import { v4 as uuid } from "uuid"
 
 interface ItemModal {

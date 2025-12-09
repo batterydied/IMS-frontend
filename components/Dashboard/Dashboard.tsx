@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import axios from "axios";
-import CalendarWidget from '@/components/Calendar';
+import CalendarWidget from '@/components/Calendar/Calendar';
 import { AnyColor, Colord, colord } from "colord";
 import { TailSpin } from 'react-loader-spinner'
 import type { InvoiceData } from "@/types/dashboard";

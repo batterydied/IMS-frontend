@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { LogOutSVG, MenuSVG } from "./SVG"
+import { LogOutSVG, MenuSVG } from "../SVG"
 import { ViewMode }from "@/app/page";
 
 interface Sidebar {
