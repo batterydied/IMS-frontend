@@ -5,6 +5,7 @@ Follow the steps below to run the app locally.
 
 In your root directory create a .env file.
 Use the following example format (replace with your actual Supabase credentials):
+
 NEXT_PUBLIC_SUPABASE_URL="https://reference123.supabase.co"
 NEXT_PUBLIC_SUPABASE_ANON_KEY="paste-your-anon-key-here"
 NEXT_PUBLIC_SUPABASE_REF="reference123"
